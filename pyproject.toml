@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cavity"
+version = "0.1.0"
+description = "Cavity population dynamics simulations"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy",
+  "tqdm",
+]
+
+[project.optional-dependencies]
+numba = ["numba"]
+plots = ["matplotlib"]
+
+[tool.setuptools]
+packages = ["cavity"]
