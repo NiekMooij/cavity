@@ -162,6 +162,7 @@ def lv_integration(
     dt: float = 0.01,
     steps: int = 20000,
     seed_offset: int = 7,
+    return_trajectory: bool = False,
 ) -> np.ndarray:
     """
     Integrate a Lotka-Volterra system on an Erdos-Renyi interaction graph.
@@ -181,7 +182,9 @@ def lv_integration(
     Returns
     -------
     N : (M,) float64 array
-        Final abundance vector after integration.
+        Final abundance vector after integration when `return_trajectory=False`.
+    traj : (steps + 1, M) float64 array
+        Full trajectory (including initial condition) when `return_trajectory=True`.
     """
     rng = np.random.default_rng(int(cfg.seed) + int(seed_offset))
     M = int(cfg.M)
@@ -205,9 +208,17 @@ def lv_integration(
 
     r = np.ones(M, dtype=np.float64)
     N = rng.uniform(0.1, 1.0, size=M).astype(np.float64)
+    if return_trajectory:
+        traj = np.empty((int(steps) + 1, M), dtype=np.float64)
+        traj[0] = N
 
-    for _ in tqdm(range(int(steps)), desc="LV integration", disable=not bool(cfg.verbose)):
+    for t in tqdm(range(int(steps)), desc="LV integration", disable=not bool(cfg.verbose)):
         dN = N * (r + A @ N)
         N = N + float(dt) * dN
         np.clip(N, 0.0, np.inf, out=N)
+        if return_trajectory:
+            traj[t + 1] = N
+
+    if return_trajectory:
+        return traj
     return N
