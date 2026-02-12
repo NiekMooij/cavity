@@ -3,7 +3,7 @@
 from .distributions import DegreeDistribution, JDistribution
 from .config import PopulationConfig
 from .population import CavityPopulation
-from .simulation import cavity_simulation, warm_up_pool
+from .simulation import cavity_simulation, warm_up_pool, lv_integration
 from .replica import replica_h_traces
 
 __all__ = [
@@ -13,5 +13,6 @@ __all__ = [
     "CavityPopulation",
     "cavity_simulation",
     "warm_up_pool",
+    "lv_integration",
     "replica_h_traces",
 ]

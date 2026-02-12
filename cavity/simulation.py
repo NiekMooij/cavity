@@ -152,3 +152,62 @@ def warm_up_pool(
         bar.update(1)
     bar.close()
     return pop.population
+
+
+def lv_integration(
+    degree: DegreeDistribution,
+    couplings: JDistribution,
+    cfg: PopulationConfig,
+    *,
+    dt: float = 0.01,
+    steps: int = 20000,
+    seed_offset: int = 7,
+) -> np.ndarray:
+    """
+    Integrate a Lotka-Volterra system on an Erdos-Renyi interaction graph.
+
+    Graph model
+    -----------
+    - Undirected simple graph G(M, p) with p = c_mean / (M - 1)
+    - No self-loops or multiedges
+    - Symmetric edge couplings sampled from `couplings`
+    - Fixed self-interaction A_ii = -1
+
+    Dynamics
+    --------
+    Forward Euler integration of:
+        dN_i/dt = N_i * (1 + sum_j A_ij N_j)
+
+    Returns
+    -------
+    N : (M,) float64 array
+        Final abundance vector after integration.
+    """
+    rng = np.random.default_rng(int(cfg.seed) + int(seed_offset))
+    M = int(cfg.M)
+    c_mean = float(degree.mean(int(cfg.k_max)))
+    if M <= 1:
+        p_edge = 0.0
+    else:
+        p_edge = min(max(c_mean / float(M - 1), 0.0), 1.0)
+
+    A = np.zeros((M, M), dtype=np.float64)
+    tri_i, tri_j = np.triu_indices(M, k=1)
+    edge_mask = rng.random(size=tri_i.size) < p_edge
+    n_edges = int(edge_mask.sum())
+    if n_edges > 0:
+        w = couplings.sample(rng, size=n_edges).astype(np.float64, copy=False)
+        ii = tri_i[edge_mask]
+        jj = tri_j[edge_mask]
+        A[ii, jj] = w
+        A[jj, ii] = w
+    np.fill_diagonal(A, -1.0)
+
+    r = np.ones(M, dtype=np.float64)
+    N = rng.uniform(0.1, 1.0, size=M).astype(np.float64)
+
+    for _ in tqdm(range(int(steps)), desc="LV integration", disable=not bool(cfg.verbose)):
+        dN = N * (r + A @ N)
+        N = N + float(dt) * dN
+        np.clip(N, 0.0, np.inf, out=N)
+    return N
