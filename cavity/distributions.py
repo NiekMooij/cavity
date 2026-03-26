@@ -90,9 +90,11 @@ class JDistribution:
         uniform_high: float = 1.0,
         gamma_shape: float = 2.0,
         gamma_scale: float = 1.0,
+        lognormal_mu: float = 0.0,
+        lognormal_sigma: float = 1.0,
     ):
-        if kind not in {"uniform_pos", "abs_gaussian", "trunc_gaussian_0", "gamma_pos"}:
-            raise ValueError("kind must be one of {'uniform_pos','abs_gaussian','trunc_gaussian_0','gamma_pos'}")
+        if kind not in {"uniform_pos", "abs_gaussian", "trunc_gaussian_0", "gamma_pos", "lognormal"}:
+            raise ValueError("kind must be one of {'uniform_pos','abs_gaussian','trunc_gaussian_0','gamma_pos','lognormal'}")
         self.kind = kind
         self.normal_mu = None if normal_mu is None else float(normal_mu)
         self.normal_sigma = None if normal_sigma is None else float(normal_sigma)
@@ -100,12 +102,16 @@ class JDistribution:
         self.uniform_high = None if uniform_high is None else float(uniform_high)
         self.gamma_shape = None if gamma_shape is None else float(gamma_shape)
         self.gamma_scale = None if gamma_scale is None else float(gamma_scale)
+        self.lognormal_mu = None if lognormal_mu is None else float(lognormal_mu)
+        self.lognormal_sigma = None if lognormal_sigma is None else float(lognormal_sigma)
         if self.kind in {"abs_gaussian", "trunc_gaussian_0"} and not (self.normal_sigma >= 0):
             raise ValueError("normal_sigma must be non-negative")
         if self.kind == "uniform_pos" and not (0.0 <= self.uniform_low < self.uniform_high):
             raise ValueError("Require 0 <= low < high for 'uniform_pos'")
         if self.kind == "gamma_pos" and not (self.gamma_shape > 0 and self.gamma_scale > 0):
             raise ValueError("Require shape>0, scale>0 for 'gamma_pos'")
+        if self.kind == "lognormal" and not (self.lognormal_sigma > 0):
+            raise ValueError("Require lognormal_sigma>0 for 'lognormal'")
 
     def sample(self, rng: np.random.Generator, size=None) -> np.ndarray:
         if self.kind == "uniform_pos":
@@ -126,4 +132,6 @@ class JDistribution:
                 x[mask] = rng.normal(self.normal_mu, self.normal_sigma, size=int(mask.sum()))
                 mask = (x < 0.0)
             return -x
+        if self.kind == "lognormal":
+            return -rng.lognormal(mean=self.lognormal_mu, sigma=self.lognormal_sigma, size=size)
         raise RuntimeError("Unhandled JDistribution kind")
