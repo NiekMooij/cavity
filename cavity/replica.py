@@ -6,8 +6,23 @@ import numpy as np
 try:
     from tqdm.auto import tqdm
 except Exception:  # pragma: no cover
-    def tqdm(x, **kwargs):
-        return x
+    class _TqdmDummy:
+        def __init__(self, iterable=None, **kwargs):
+            self.iterable = iterable
+
+        def __iter__(self):
+            if self.iterable is None:
+                return iter(())
+            return iter(self.iterable)
+
+        def update(self, n=1):
+            return None
+
+        def close(self):
+            return None
+
+    def tqdm(iterable=None, **kwargs):
+        return _TqdmDummy(iterable, **kwargs)
 
 from .distributions import DegreeDistribution, JDistribution
 from .config import PopulationConfig
@@ -88,11 +103,11 @@ def replica_h_traces(
     def _shared_step(rng1, rng2, pop1, pop2, phi, x, y, scratch1, scratch2, hbuf1, hbuf2, recenter_flag):
         # choose how to draw degree (no size bias, matches discrete method)
         if "k" in sync_set:
-            d1 = degree.sample_k(rng_disorder, size_bias=False, k_max=k_max)
+            d1 = degree.sample_excess_k(rng_disorder, k_max=k_max)
             d2 = d1
         else:
-            d1 = degree.sample_k(rng1, size_bias=False, k_max=k_max)
-            d2 = degree.sample_k(rng2, size_bias=False, k_max=k_max)
+            d1 = degree.sample_excess_k(rng1, k_max=k_max)
+            d2 = degree.sample_excess_k(rng2, k_max=k_max)
 
         # replica 1
         if d1 > 0:

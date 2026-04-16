@@ -99,7 +99,7 @@ class CavityPopulation:
         while done < n_samples:
             chunk = min(progress_every, n_samples - done)
             for s in range(chunk):
-                d = int(rng.poisson(c_mean))
+                d = self.degree.sample_site_k(rng, k_max=int(self.cfg.k_max))
                 if d > 0:
                     idx = rng.integers(0, pool_size, size=d, dtype=np.int64)
                     Js = self.couplings.sample(rng, size=d).astype(dtype, copy=False)

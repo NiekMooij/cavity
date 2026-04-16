@@ -61,21 +61,49 @@ class DegreeDistribution:
             return _norm_p(self.pmf)
         raise ValueError(f"unknown degree distribution kind: {self.kind}")
 
+    def excess_pmf_array(self, k_max: int = 50) -> np.ndarray:
+        """
+        PMF of the cavity/excess degree, i.e. the number of neighbours that
+        remain after following a random edge into a node.
+        """
+        if self.kind == "poisson":
+            return self.pmf_array(k_max)
+        if self.kind == "random_regular":
+            k_excess = max(0, int(self.c) - 1)
+            k_max = max(int(k_max), k_excess)
+            q = np.zeros(k_max + 1, float)
+            q[k_excess] = 1.0
+            return q
+
+        p = self.pmf_array(k_max + 1)
+        if p.size <= 1:
+            return np.array([1.0], dtype=float)
+        degrees = np.arange(p.size, dtype=float)
+        c = float((degrees * p).sum())
+        if c <= 0.0:
+            return np.array([1.0], dtype=float)
+        q = (degrees[1:] * p[1:]) / c
+        return _norm_p(q)
+
     def mean(self, k_max: int = 50) -> float:
         p = self.pmf_array(k_max)
         k = np.arange(p.size, dtype=float)
         return float((k * p).sum())
 
-    def sample_k(self, rng: np.random.Generator, size_bias: bool, k_max: int = 50) -> int:
+    def sample_site_k(self, rng: np.random.Generator, k_max: int = 50) -> int:
         p = self.pmf_array(k_max)
         k = np.arange(p.size, dtype=int)
-        if size_bias:
-            c = self.mean(k_max)
-            if c <= 0:
-                return 0
-            q = _norm_p(p * k / c)
-            return int(rng.choice(k, p=q))
         return int(rng.choice(k, p=p))
+
+    def sample_excess_k(self, rng: np.random.Generator, k_max: int = 50) -> int:
+        q = self.excess_pmf_array(k_max)
+        k = np.arange(q.size, dtype=int)
+        return int(rng.choice(k, p=q))
+
+    def sample_k(self, rng: np.random.Generator, size_bias: bool, k_max: int = 50) -> int:
+        if size_bias:
+            return self.sample_excess_k(rng, k_max=k_max)
+        return self.sample_site_k(rng, k_max=k_max)
 
 
 class JDistribution:

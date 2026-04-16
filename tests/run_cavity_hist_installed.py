@@ -5,15 +5,32 @@ Run abundance-histogram comparison using the installed `cavity` package APIs.
 import numpy as np
 
 import cavity
-from cavity import (
-    CavityPopulation,
-    DegreeDistribution,
-    JDistribution,
-    PopulationConfig,
-    cavity_simulation,
-    lv_integration,
-    warm_up_pool,
-)
+
+
+def _require_cavity_attr(name: str):
+    if hasattr(cavity, name):
+        return getattr(cavity, name)
+
+    origin = getattr(cavity, "__file__", None)
+    path = list(getattr(cavity, "__path__", []))
+    exported = sorted(x for x in dir(cavity) if not x.startswith("_"))
+    raise RuntimeError(
+        "Installed `cavity` package is missing expected symbol "
+        f"{name!r}.\n"
+        f"module={cavity!r}\n"
+        f"origin={origin!r}\n"
+        f"path={path!r}\n"
+        f"exported={exported!r}"
+    )
+
+
+CavityPopulation = _require_cavity_attr("CavityPopulation")
+DegreeDistribution = _require_cavity_attr("DegreeDistribution")
+JDistribution = _require_cavity_attr("JDistribution")
+PopulationConfig = _require_cavity_attr("PopulationConfig")
+cavity_simulation = _require_cavity_attr("cavity_simulation")
+lv_integration = _require_cavity_attr("lv_integration")
+warm_up_pool = _require_cavity_attr("warm_up_pool")
 
 
 def compare_abundance_histograms(

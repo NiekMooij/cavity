@@ -14,8 +14,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-numba = ["numba"]
+numba = [
+  "numba; python_version < '3.14'",
+  "numba>=0.64; python_version >= '3.14'",
+]
 plots = ["matplotlib"]
 
-[tool.setuptools]
-packages = ["cavity"]
+[tool.setuptools.packages.find]
+include = ["cavity", "cavity.*"]

@@ -1,0 +1,1255 @@
+\documentclass[11pt,a4paper]{article}
+
+% --- Basic packages ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{lipsum}
+\usepackage{cite}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\nm}[1]{{\color{red}[NM: #1]}}
+\newcommand{\iz}[1]{{\color{orange}[IN: #1]}}
+
+\newcommand{\ic}{{\color{red}[citation]}}
+    
+% --- Document starts here ---
+\begin{document}
+
+\title{Phase diagrams of Lotka-Volterra models on sparse random graphs with competitive interactions}
+\author{Authors}
+\date{}
+
+\maketitle
+
+% \begin{enumerate}
+%     \item Could add expression for the value of the Lyapunov function in the fixed point using cavity method.
+% \end{enumerate}
+
+\begin{abstract}
+% We make a study of  large Lotka-Volterra systems with competitive interactions defined on sparse random graphs with arbitrary degree distributions.   We develop a cavity method to determine the Almeida-Thouless line of these systems, separating a region with a unique fixed point from a region with a number of fixed points that grows with the number of species.  Furthermore, we use the cavity method to determine the properties of the unique equilibrium phase.    We analyse how the extinction probabilities depend on the  degrees  of nodes. 
+    On dense graphs, phase diagrams of large Lotka--Volterra ecosystems depend only on the first two moments of the interaction distribution.  On sparse graphs, analytical results exist only for regular random graphs where every node has the same degree, leaving the effect of degree variability open.  We extend the zero-temperature cavity method to competitive Lotka--Volterra systems on sparse random graphs with arbitrary degree distributions.  Using a two-replica approach, we locate the Almeida-Thouless line separating a unique-equilibrium phase from a multi-attractor phase where the number of fixed points grows exponentially with the number of species.  At small mean and variance of the coupling distribution the phase boundary depends only on the first two moments, recovering the dense-graph result; at larger values, phase boundaries for different coupling families diverge, and higher-order moments of the interaction distribution control the transition.  Within the unique-equilibrium phase, the extinction probability increases monotonically with node degree.  Cavity predictions agree with Lotka-Volterra simulations on Erd\H{o}s--R\'{e}nyi graphs.
+\end{abstract}
+
+\section{Introduction}
+Whether a species persists or goes extinct depends not only on how strongly it interacts with others, but also on how those interactions are wired. In  real ecosystems the wiring is  often sparse: each species  interacts with only a small fraction of other species in the community~\cite{jordano2016sampling,comita2010}, and the  interaction strengths span a broad range, from many weak to a few strong couplings~\cite{wootton2005measurement}. Dense mean-field theories average over this structure and can therefore miss effects that arise from limited connectivity and from the variability of node degrees.
+
+Most analytical progress on Lotka-Volterra  dynamics  of large ecosystems has been made  for dense graphs.  In this case,  dynamical mean-field and random-matrix methods give access to extinction fractions and phase diagrams~\cite{bunin2017,biroli2018}, and  heterogeneous mean-field approximations predict that highly connected species face greater extinction risk~\cite{poley2025}. 
+
+In the case of sparse random graphs,   the picture is less complete.  Recent works have initiated a study of  Lotka-Volterra dynamics on sparse, regular random graphs~\cite{stav2022,tonolo2025generalized}, for which each node has the same degree.    Using the cavity method,  two phases were found: a unique equilibrium  phase  at low competitiveness between species,    and a multi-attractor phase at large competitiveness.  In the unique equilibrium phase 
+the stationary probability distribution  is independent of the initial configuration, while in the multiple attractor phase it depends on the initial configuration. 
+
+
+So far, the effect of degree fluctuations on the stability of sparse ecosystems   remains unexplored.   Furthermore, the  properties of the multiple attractor remain  poorly understood.   Regarding this latter, note that   Reference~\cite{tonolo2025generalized}   identifies the transition  to the multiple attractor  by analysing when their theoretical approach, based on the cavity method, breaks down (the cavity equations describing the stationary state do not converge to a solution).     However, as the theory breaks down in the multiple attractor region, the properties of this phase, such as the number of stationary states as a function of the number of species,  remain unexplored. 
+
+
+To address degree fluctuations and the properties of the multiple attractor phase,    we consider in this paper  two  simplifications of the model of Ref.~\cite{tonolo2025generalized}.  A first simplification is that we consider a Lotka-Volterra dynamics without noise, in contrast to the stochastic dynamics in  Ref.~\cite{stav2022,tonolo2025generalized}.  This has the advantage that attractors are fixed points, rather than probability distributions defined on a subset of the phase of configurations, and counting fixed points is more tractable.  A second key simplification is that we consider a model for which all interactions are competitive.   In such a model, population abundances are  bounded, and thus divergent population abundances,  as occurs in the  model  Ref.~\cite{tonolo2025generalized}, do not occur in the model with competitive interactions.  This makes the numerical solutions of the cavity method more tractable and allows us to explore Lotka-Volterra systems on random grahs with unbounded degrees (such as, Erd\H{o}s-R\'{e}nyi graphs).  
+    
+  
+Using the zero-temperature cavity method~\cite{mezard2003cavity},  we derive a set of equations that determines the statistical properties of fixed points in    Lotka-Volterra models with a large number of species defined on locally tree-like random graphs.    We are able to account for degree fluctuations, and discuss how the extinction probability depends on the degree of a node.    We also identify a transition from a  phase where the cavity method works to a phase where the cavity method breaks down.   Using the fact that attractors are fixed points, we are able to confirm numerically    that these two phases correspond with a unique equilibrium and multiple attractor phase.   We determine how the number of fixed points scale with the number of species [{\bf results to be confirmed}]  
+
+The paper is structured as follows...
+
+%which becomes exact on the locally tree-like graphs that arise in sparse random graphs, such as, Erd\H{o}s-R\'{e}nyi graphs. The method recasts the equilibrium problem as self-consistent equations for local cavity fields~\cite{mezard2003cavity,kwon1991spin,neri2010phase} that can be solved by population dynamics for arbitrary degree and coupling distributions.  We locate the transition to the multiple-attractor phase through a two-replica method~\cite{kwon1991spin,aldous2005survey,neri2010phase}.
+
+%Concretely, we derive and solve these equations for the competitive LV model with symmetric interactions at zero temperature (deterministic dynamics). Computing extinction phase diagrams for several families of coupling distributions, we find that at small mean and variance the phase boundaries collapse onto a single curve set by the first two moments---recovering the dense-network result---but that higher-order moments take over at larger values, an effect intrinsic to sparse networks. We validate all predictions against direct LV simulations and show how extinction probability grows with node degree, quantifying the role of degree heterogeneity in shaping species survival.
+
+\section{Competitive Lotka-Volterra systems on sparse random graphs}
+We define a Lotka--Volterra model with competitive interactions on a sparse random graph $G = (V,E)$, representing an ecosystem with $S$ species.    Here, $V=\left\{1,2,\ldots,S\right\}$ is the set of nodes and $E$ is the set of nondirected edges of the graph $G$.  The abundances $n_i(t)$ are nonnegative real numbers and   evolve according to 
+% \begin{equation}
+%     \frac{\mathrm{d} n_i(t)}{\mathrm{d}t}
+%     = n_i \bigg[r_i - \frac{n_i}{K_i} - \frac{r_i}{K_i}\sum_{j \in \partial i }  J_{ij} \, n_j \bigg] + \xi_i(t),
+%     \qquad i=1,2,\dots,N,
+% \end{equation}
+% where $\partial i = \{ j \in V \mid (j,i)\in E\}$ denotes the neighborhood of node $i$. The parameters $r_i$ and $K_i$ are, respectively, the intrinsic growth rate and carrying capacity. The term $\xi_i(t)$ represents Gaussian multiplicative noise with mean zero and covariance
+% $\mathbb{E}[\xi_i(t)\xi_j(t')] = 2T\,n_i(t)\,\delta_{ij}\delta(t-t')$.
+\begin{equation}
+    \frac{\mathrm{d} n_i(t)}{\mathrm{d}t}
+    = n_i(1-n_i) - \sum_{j\in\partial i} J_{ij}\, n_i n_j, \quad {\rm where} \quad n_i(0)>0 \text{ for all } i=1,2,\dots, S.
+    \label{eq:sys}
+\end{equation} 
+Here $t\geq 0$  is  the time index and  $\partial i = \left\{j\in V: (i,j)\in E\right\}$ is the neighbourhood set of $i$, consisting of all nodes $j\in V$ connected to node $i$.  Notice that in the initial state all abundances are strictly positive, as if $n_i(0)=0$, then $n_i(t)=0$ for all $t\geq 0$,  and the system reduces to a Lotka-Volterra dynamics with with $S-1$ species.    We consider competitive interactions  for which $J_{ij} = J_{ji}\geq 0$.   In this case, the fixed point solutions $\vec{n}^\ast = (n^\ast_1,\ldots,n^\ast_S)$ of (\ref{eq:sys})  satisfy $n^\ast_i\in [0,1]$, with $n^\ast_i = 0$ if a species goes extinct, and thus cannot coexist with the other species.    
+
+As the interaction matrix is symmetric, Eq.~(\ref{eq:sys}) can be expressed by the  gradient dynamics
+\begin{equation}
+    \frac{\mathrm{d} n_i}{\mathrm{d} t} 
+    = -\,n_i \,\partial_{n_i} H(\vec n), \label{eq:LV2}
+\end{equation}
+where $H$ is the Hamiltonian 
+\begin{equation}
+    H(\vec n)
+    = \sum_{i=1}^S n_i \Big(\tfrac{n_i}{2}-1\Big)
+      + \sum_{\{i,j\}\in E} J_{ij}\,n_i n_j,
+    \label{eq:energy}
+\end{equation}
+with $\vec n = (n_1,n_2,\ldots,n_S)$.
+Note that Eq.~(\ref{eq:LV2}) describes a generalized gradient flow under the Shahshahani metric~\cite[p.~123]{hofbauer2003evolutionary}, with $H$ being a Lyapunov function.
+
+The random graph $G$  is assumed to be a locally tree-like random graph~\cite{dembo2010ising}.    This means that the probability that a  finite neighbourhood of a  uniformly and randomly picked node is a tree converges to one  in the limit of large $S$~\cite{bordenave2015}.   As  examples of locally tree-like random graphs, we consider random graphs with a prescribed degree distribution $p(k)$~\cite{}.   Such graphs can be drawn by sampling the degrees $|\partial_i|$ independently and identically from  $p(k)$, and by subsequently generating the edges of the graph with a stub matching algorithm~\cite{}.   We assume that the second moment of the degree distribution is finite,  $\sum^{\infty}_{k=0}p(k)k^2<\infty$.   
+
+The weights $J_{ij}=J_{ji}>0$ are  independent and identically distributed random variables  drawn from a prescribed distribution $\rho(J)$.
+
+
+Lotka-Volterra systems on sparse random graphs have also been studied in Refs.~\cite{mooij2024}\nm{Add more citations}.  It was shown that for graphs with bounded degrees, an unique fixed point without extinction exist in the limit of system size going to infinity. 
+The model Eq.~(\ref{eq:sys}) is the zero temperature version of the model in Ref.~\cite{tonolo2025generalized}, which  was solved with the cavity method for the case of regular random graphs ($p(k) = \delta_{k,c}$).    It was conjectured that for small mean interactions strengths there is a unique equilibrium phase while for large mean interactions there is a multi-attractor phase.    In the next section we develop a  cavity method approach to address this problem in the noiseless model of Eq.~(\ref{eq:sys}).  
+
+
+\section{Cavity method}
+As $H$ is a Lyapunov function, in the limit of large $t\gg 1$ the state $\vec{n}(t)$  converges to a stable KKT  point $\vec{n}^\ast$, which corresponds to a local minimum of
+\begin{equation}
+\min_{\vec{n}\in [0,1]^S} H(\vec{n}).  \label{eq:min}
+\end{equation}
+In what follows, we use  the cavity method for sparse disordered systems at zero temperature~\cite{mezard2003cavity}  to determine the minima  $\vec{n}^\ast$ of $H(\vec{n})$.    
+
+
+The cavity method expresses the minimisation problem (\ref{eq:min}) locally. 
+For this, we  define the  so-called cavity fields
+\nm{New expression below. Make changes in appendix and check other parts of the manuscript for changes.}
+\begin{equation}
+    h_i(n_i) = \min_{\vec n \setminus \{n_i\} \in [0,1]^{S-1}} H(\vec n) - \min_{\vec n \setminus \{n_i\} \in [0,1]^{S-1}}H^{(i)}(\vec n^{(i)}),
+\end{equation}
+where $H^{(i)}(\vec n)$ is the Lyapunov function for the system without node $i$.    Thus, 
+\begin{equation}
+    n^\ast_i = \argmin_{n_i \in [0,1]} h_i(n_i)   \label{eq:nast}
+\end{equation}
+
+
+Exploiting the locally tree-like structure of the graph $G$, we derive in what follows  in the limit of large $S$  recursion relations for the local fields $h_i$, which are called the cavity equations.
+
+
+\subsection{Cavity equations for locally-tree like graphs} 
+Using the assumed locally tree-like structure of $G$, we show in Appendix~\ref{app:cavity_equations} that for large values of the number of species $S$,  
+\begin{eqnarray}
+   h_i(n_i)
+    = n_i \bigg( \frac{n_i}{2} - 1 \bigg)
+      + \sum_{j\in \partial i}
+        \min_{n_j \in [0,1]}
+        \left\{h^{(i)}_j(n_j) + J_{ij} n_j n_i\right\},
+    \label{eq:cavityv2}
+\end{eqnarray} 
+where 
+\begin{equation}
+h^{(i)}_j(n) =  \min_{\vec n \setminus \{n_j\} \in [0,1]^{S-2}} H^{(i)}(\vec n)
+\end{equation}
+is the local field of node $j$ in the the Lotka-Volterra system  with Hamiltonian 
+ $H^{(i)}$.    The Hamiltonian is  obtained from $H$ by deleting node $i$ from the graph $G$,  as well as    all the  interactions of $i$ with its neighbours.   Applying  to $h^{(i)}_j$ the same argument as we used to derive (\ref{eq:cavityv2}), we show in Appendix~\ref{app:cavity_equations}  that the $h^{(i)}_j$ fulfil the equations
+\begin{equation}
+    h^{(i)}_j(n_j)
+    = n_j \bigg( \frac{n_j}{2} - 1 \bigg)
+      + \sum_{l\in \partial j \setminus \{ i \}}
+        \min_{n_l \in [0,1]}
+        \left\{h^{(j)}_l(n_l) + J_{jl} n_j n_l\right\},
+    \label{eq:cavity}
+\end{equation}
+where $i\in V$ and $j\in \partial i$. 
+
+Note that the cavity fields  $h^{(i)}_j$ solving the Eqs.~(\ref{eq:cavity})  are functions of $G$ and the interaction matrix $J_{ij}$.  
+ The cavity equations  (\ref{eq:cavity})  can be solved numerically using an iterative message passing algorithm; see, amongst others, the Refs.~\cite{zdeborova2016statistical, del2024analytical}. In message passing algorithms  the $2|E|$ cavity fields    $h^{(i)}_j(n)$ are initiated at some random values, and then  updated iteratively using Eq.~(\ref{eq:cavity}) until  the $h^{(i)}_j(n)$  have converged to a fixed point of the iteration.      The fixed point $\vec{n}^\ast$ of the dynamical system~\eqref{eq:sys} is then obtained by applying Eq.~(\ref{eq:nast}) to the found solution of the cavity equations.  
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{main_figures/FIGURE1.pdf}
+    \caption{
+    \textbf{Lotka-Volterra systems display two distinct phases.}
+    \textbf{a}, Phase diagram showing parameter regions with a unique equilibrium and with multiple attractors.
+    \textbf{b}, Trajectories in the unique-equilibrium regime, where distinct initial conditions converge to the same asymptotic state.
+    \textbf{c}, Trajectories in the multistable regime, where distinct initial conditions evolve to different long-time states.}
+    \label{fig:FIGURE1}
+\end{figure}
+
+
+\subsection{Random graphs with a prescribed degree distribution}
+For sparse random graphs with a prescribed  degree distribution $p(k)$ and  independently and identically distributed interactions drawn from the distribution $\rho(\cdot)$, we can describe the solutions to the cavity equations more compactly by using distributions.  
+
+Let us define the following two  distributions 
+\begin{equation}
+\mathcal{P}(h) = \frac{1}{S}\sum^S_{i=1}\delta(h-h_i)
+\end{equation}
+and 
+\begin{equation}
+\mathcal{Q}(h) = \frac{\sum^S_{i=1}\sum_{j\in \partial i}\delta(h-h^{(j)}_i)}{ 2|E|}, 
+\end{equation}
+where $h^{(j)}_i$ and $h_i$ are the solutions to the Eqs.~(\ref{eq:cavity}) and (\ref{eq:cavityv2}), respectively. 
+
+For finite values of $S$, these distributions are functions of the graph $G$ and the matrix $J_{ij}$, as they are defined in terms of the fields $h^{(j)}_i$ and $h_i$.    However, as $\mathcal{P}$ and $\mathcal{Q}$ are macroscopic observables, in the limit of $S\rightarrow \infty$ they converge to a deterministic limit that solves  the
+ recursive distributional equations 
+\begin{eqnarray}
+    \mathcal{P}\left( h \right)
+    &=& \sum_{k=0}^{\infty} p(k)
+    \int \prod_{j=1}^k \mathrm{d}J_j\,\rho(J_j)\,
+    \int \prod_{j=1}^k \mathrm{d}h_j\,\mathcal{Q}(h_j)
+    \nonumber\\
+    &&\times \delta_{{\rm F}}\!\left(
+      h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{j=1}^k \min_{x\in[0,1]}\{h_j(x)+J_j n x\}\Big]
+    \right) \label{eq:P}
+\end{eqnarray} 
+and
+\begin{eqnarray}
+    \mathcal{Q}\left( h \right)
+    &=& \sum_{k=0}^{\infty} \frac{p(k)k}{c}
+    \int \prod_{j=1}^{k-1} \mathrm{d}J_j\,\rho(J_j)\,
+    \int \prod_{j=1}^{k-1} \mathrm{d}h_j\,\mathcal{Q}(h_j)
+    \nonumber\\
+    &&\times \delta_{{\rm F}}\!\left(
+      h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{j=1}^{k-1} \min_{x\in[0,1]}\{h_j(x)+J_j \:  n x\}\Big]
+    \right). \label{eq:Q}
+\end{eqnarray} 
+Here the $\delta_{{\rm F}}$ are  distributions on the functions  $h(n)$ for all values of $n\in[0,1]$ and $c= \sum^{\infty}_{k=0}p(k)k$ is the mean degree.    The degree distribution  $p(k)k/c$  that appears in Eq.~(\ref{eq:Q}) is the distribution of degrees at the end point of a randomly selected edge of the graph. 
+For Poisson degree distributions with $p(k) = e^{-c}c^k/k!$ we recover $\mathcal{P} = \mathcal{Q}$.     
+
+
+The distribution of population abundances.... [{\bf IN: should probably be discussed here}]
+
+        The recursive distributional equations (\ref{eq:P}) and (\ref{eq:Q})  follow from   the  cavity Eqs.~(\ref{eq:cavityv2}) and (\ref{eq:cavity})  and the fact that due to the locally tree-like nature of sparse random graphs with prescribed degree distributions the random variables on the right-hand side of these equations   are independent from each other.   Equations of a similar form  been derived in various other contexts,  amongst others,  spin glasses~\cite{viana1985phase,skantzos},  optimization problems on random graphs~\cite{zdeborova2007phase},  percolation theory~\cite{kuhn2017heterogeneous}, in the dynamics of spin models on graphs~\cite{neri2009cavity},  and  in random matrix theory~\cite{kuhn2008spectra,bordenave2010resolvent,mambuca2022dynamical}. 
+
+The Eqs.~\eqref{eq:P} and \eqref{eq:Q} can be solved with the population dynamics algorithm of Ref.~\cite{mezard2001bethe}.  We discuss this algorithm in   detail  in Appendix~\ref{app:population_dynamics_algorithm} as we have used it repeatedly in this paper.  
+
+
+
+
+
+\subsection{de Almeida-Thouless line for Lotka-Volterra systems}
+\label{sec:almeida_thouless}
+The de Almeida-Thouless line separates a parameter region where the Hamiltonian~(\ref{eq:energy}) has  a finite number of fixed points (even in the limit of $S\rightarrow \infty$),   from a region where it has a number of fixed points that grows exponentially as a function of $S$~\cite{de1978stability,del2024analytical}; see Fig.~\ref{} for the de Almeida-Thouless line in the present model.      %  We describe here  two methods, borrowed from spin glass theory~\cite{}, to determine the de Almeida-Thouless line of a Lotka-Volterra system defined on a sparse random graph: one method is based on the cavity Eqs.~(\ref{eq:cavityv2}), and another methods uses     recursive distributional equations of the form (\ref{eq:Q}).    
+
+To determine the  de Almeida-Thouless line with the cavity Eqs.~(\ref{eq:cavityv2}), we can  analyse the dynamics of the message passing algorithm defined by these equations~\cite{tonolo2025generalized}.  If there is unique  minimum to the Hamiltonian (or a finite $S$-independent number of fixed points), then the  message passing algorithm   evolves towards a  solution of the Eqs.~(\ref{eq:cavityv2}).  On the other hand, if the  number of local minima of the Hamiltonian  grows exponentially with $S$, then we observe a chaotic dynamics in the dynamics described by the message passing algorithm. 
+
+It is also possible to determine the Almeida-Thouless line with recursive distributional equations.  For this, it is necessary to consider two replicas of cavity fields~\cite{aldous2005survey,neri2010phase}, as the Eq.~(\ref{eq:Q}) converges to a seemingly valid solution for all parameter values. 
+Instead, if we consider two sets of cavity fields, $h^{(j)}_i$ and $g^{(j)}_i$, then their joint distribution behaves differently depending on whether we are in a region with an unique fixed point, or  a region with a number of fixed points growing with $S$.   
+
+Consider the  joint distribution 
+\begin{equation}
+\mathcal{Q}(h,g) = \frac{\sum^S_{i=1}\sum_{j\in \partial i}\delta(h-h^{(j)}_i)\delta(g-g^{(j)}_i)}{ 2|E|}, 
+\end{equation}  
+that 
+solves  the recursive distributional equation 
+\begin{eqnarray}
+    \mathcal{Q}(h,g) &=& \sum^{\infty}_{k=0} \frac{p_{\rm deg}(k)k}{c} \int \prod^{k-1}_{j=1} \mathrm{d} J_j \, \rho(J_j) \int \prod^{k-1}_{j=1} \mathrm{d}h_j{\rm d}g_j \, \mathcal{Q}(h_j,g_j)
+    \nonumber\\
+    && \times
+    \delta\left(h - \bigg[n\left(\frac{n}{2}-1\right) + \sum^{k-1}_{j=1}\min_{x \in [0,1]} \left\{h_j(x)+J_{j}\: x n\right\} \bigg]\right)
+    \nonumber\\
+    && \times
+    \delta\left(g - \bigg[n\left(\frac{n}{2}-1\right) + \sum^{k-1}_{j=1}\min_{x\in [0,1]} \left\{g_j(x)+J_{j}\: xn\right\} \bigg] \right).  
+    \label{eq:stabTwox}
+\end{eqnarray}
+Let us initialise $   \mathcal{Q}(h,g) $ in the factorised state  
+\begin{equation}
+    \mathcal{Q}(h)\mathcal{Q}(g) 
+\end{equation} 
+where $ \mathcal{Q}$ is a fixed point solution of the Eq.~(\ref{eq:Q}).  If there is  one  unique solution to the   cavity equations, then  $ \mathcal{Q}$  
+evolves under the recursion defined by (\ref{eq:stabTwox}) towards the diagonal form 
+\begin{equation}
+    \mathcal{Q}(h,g) = \mathcal{Q}(h)\delta(h-g).  \label{diag}
+\end{equation}  
+On the other hand, if the number of solution to the cavity equations grows with the system size, then the  factorised initial state evolves towards a nondiagonal  solution of the equation (\ref{eq:stabTwox}). 
+Thus, the nonconvergence of the cavity equations (\ref{eq:cavityv2})   and the   nondiagonality of the stable  solution $Q(h,g)$ to    Eq.~(\ref{eq:stabTwox}) are two equivalent statements.   This equivalence was proven rigorously in Ref.~\cite{aldous2005survey} for a class of recursive distributional equations and implemented numerically in Ref.~\cite{neri2010phase}  for a spin glass model. 
+ 
+Note that  the two-replica approach also allows us to distinguish a parameter region with a finite number of local minima  from a parameter region where the number of local minima grows as a function of the system size.   For this, we need however to select a  factorised state $Q(h)Q(g)$, corresponding with one of the (pure) stable fixed points of the recursion (\ref{eq:Q}).    In the present model, we transition from a unique fixed point to a multi attractor phase, as we show later. 
+  
+In this work we solve the  Eq.~(\ref{eq:stabTwox})  with a population dynamics algorithm, as  described in Appendix~\ref{app:two_replica-approach}, and the  Almeida-Thouless line of Lotka-Volterra systems on random graphs is determined as the line separating the region for which the stable stationary  solution to Eq.~(\ref{eq:stabTwox})   is diagonal from the region where the stationary solution is not diagonal (Appendix~\ref{app:boundary_estimation}).  
+
+\subsection{Number of fixed points from the 1RSB cavity method}
+If the stable solution to the two-replica equations (\ref{eq:stabTwox}) is nondiagonal,  then the Lotka-Volterra system (\ref{eq:sys}) admits a number of fixed points $\mathcal{N}$ that grows exponentially with $S$, i.e., 
+\begin{equation}
+\mathcal{N} \sim e^{S\Sigma}.  
+\end{equation}
+The quantity 
+\begin{equation}
+\Sigma = \lim_{S\rightarrow \infty} \frac{1}{S}\ln\langle \mathcal{N} \rangle 
+\end{equation}
+is referred to as the quenched complexity and is one of the main quantity of interests in disordered systems theory~\cite{}.     
+
+ To determine   $\Sigma$, we  define   a one-parameter family of  exponential measures on the set of cavity fields $\left\{h_i\right\}_{i=1,\ldots,S}$  solving the cavity equations (\ref{eq:cavity}).      This family of measures is defined by 
+\begin{equation}
+\mathcal{P}^{\rm 1RSB}\left(\left\{h^{(j)}_i\right\}_{(i,j)\in \mathcal{E}}\right) \sim  e^{-\beta \left(\sum^S_{i=1}\Delta H^{\rm site}_i - \sum_{(i,j)\in E}\Delta H^{\rm edge}_{ij}\right)}, \label{eq:P1RSB}  
+\end{equation}
+for all $\left\{h^{(j)}_i\right\}_{i=1,\ldots,S}\in \Xi$,  with $\Xi$ the set of solutions to the cavity equations.   If  $\left\{h^{(j)}_i\right\}_{i=1,\ldots,S}\notin \Xi$, then the probability is set to zero. 
+Here, $\Delta H^{\rm site}_i$ is the  contribution to the Lyapunov function $H$ corresponding with the node $i$ and its neighbours, and $\Delta H^{\rm edge}_{ij}$ contains the contribution to the Lyapunov function from the  two  nodes $i$ and $j$, and their neighbours.     The explicit expressions for $\Delta H^{\rm site}_i$  and   $\Delta H^{\rm edge}_{ij}$  are presented in Appendix~\ref{app:lyapunov}.  
+
+
+Associated with the measure $\mathcal{P}^{\rm 1RSB}$ we  define the scaled cumulant generating function $\Phi(\beta)$  of the Lyapunov function $H$, 
+\begin{equation}
+\Phi(\beta)  = -\lim_{S\rightarrow \infty}\frac{1}{S\beta} \ln \int_{\Xi} \left\{d
+h_i\right\}_{i\in [S]}  e^{-\beta \left(\sum^S_{i=1}\Delta H^{\rm site}_i - \sum_{(i,j)\in E}\Delta H^{\rm edge}_{ij}\right)}.  
+\end{equation}
+The quantity $\Phi$ is often called a "generalised free energy" in the statistical physics literature, as it has a similar form to a free energy.  
+
+The interest in $\Phi$ is that, using large deviation theory arguments~\cite{}, it is the Fenchel-Legendre transform of the  quenched complexity 
+\begin{equation}
+\Sigma(\epsilon) = \lim_{S\rightarrow \infty} \frac{1}{S} \langle \ln \mathcal{N}(\epsilon)\rangle ,
+\end{equation}
+where  $\mathcal{N}(\epsilon)$ is the number of solutions to the cavity equations with Lyapunov function $H = \epsilon$.      Indeed, in the limit of large $S$, 
+\begin{equation}
+\Phi(\beta) \sim  -\lim_{S\rightarrow \infty}\frac{1}{S\beta}\ln \int_{\mathbb{R}} d\epsilon \exp\left(S [-\epsilon \beta + \Sigma(\epsilon)]\right)
+\end{equation}
+and thus from the saddle point integral, 
+\begin{equation}
+\Phi(\beta) = \frac{1}{\beta}{\rm max}_{\epsilon\in \mathbb{R}}\left\{\beta \epsilon  - \Sigma(\epsilon)\right\}. 
+\end{equation} 
+If $\Phi(\beta)$ is a convex function, then $\Sigma(\epsilon)$ is the Fenchel-Legendre transform of $\beta \Phi(\beta)$, i.e., 
+\begin{equation}
+\Sigma(\epsilon) = {\rm max}_{\beta}\left\{\beta \epsilon - \beta  \Phi(\beta)\right\}.
+\end{equation}
+If $\Phi$ is differentiable, then we get simply 
+\begin{equation}
+\Sigma(\epsilon) = \beta^\ast \epsilon - \beta^\ast \Phi(\beta^\ast),
+\end{equation}   
+with $\left.\partial_\beta (\beta \Phi(\beta))\right|_{\beta=\beta^\ast} = \epsilon$. 
+
+The quantity $\Phi$ can  be analysed  with the 1RSB cavity method~\cite{mezard2001bethe,mezard2003cavity}.      
+Applying the cavity method to $\mathcal{P}^{\rm 1RSB}\left(\left\{h_i\right\}_{i=1,\ldots,S}\right) $, we can now determine $\Phi(\beta)$ in the limit of large $S$, and estimate $\Sigma$ with $\Sigma^{1{\rm RSB}}$.       Defining the marginal cavity distributions, 
+\begin{equation}
+\mathcal{P}^{{\rm 1RSB},(i)}_j(h) =  \int \left\{dh_\ell\right\}_{\ell\in [S]\setminus \left\{j\right\}} \mathcal{P}^{{\rm 1RSB},(i)}\left(\left\{h_\ell\right\}_{\ell=1,\ldots,S}\right), 
+\end{equation}
+we obtain the recursions 
+\begin{eqnarray}
+\mathcal{P}^{{\rm 1RSB}, (i)}_j(h)  & \sim&  \int \prod_{\ell\in \partial j\setminus\left\{i\right\}} dh^{(j)}_\ell \mathcal{P}^{{\rm 1RSB}, (j)}_\ell(h^{(j)}_\ell) \:  e^{-\beta \Delta H^{\rm iter}(h)}
+\nonumber\\ 
+&& \times \delta_{\rm F}\left(  h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{\ell\in \partial_j \setminus\left\{i\right\}} \min_{x\in[0,1]}\{h^{(j)}_\ell(x)+J_{j\ell} \:  n x\}\Big]\right) ,
+\end{eqnarray}
+where 
+\begin{equation}
+\Delta H^{{\rm iter}, {(j)}}_i = {\rm min}_n  h(n).
+\end{equation}
+
+
+Using these cavity distributions we can then determine 
+\begin{equation}
+\mathcal{P}^{\rm 1RSB}_i(h) =  \int \left\{dh_\ell\right\}_{\ell\in [S]\setminus\left\{i\right\}} \mathcal{P}^{\rm 1RSB}\left(\left\{h_\ell\right\}_{\ell=1,\ldots,S}\right) 
+\end{equation}
+through, 
+\begin{eqnarray}
+\mathcal{P}^{{\rm 1RSB}}_i(h)  & \sim&  \int \prod_{j\in \partial i} dh^{(i)}_j \mathcal{P}^{{\rm 1RSB}, (i)}_j(h^{(i)}_j) \: e^{-\beta \min_n h}
+\nonumber\\ 
+&& \times \delta_{\rm F}\left(  h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{j\in \partial_i } \min_{x\in[0,1]}\{h^{(i)}_j(x)+J_{ji} \:  n x\}\Big]\right),
+\end{eqnarray}
+
+
+The generalised free energy is then given by 
+\begin{equation}
+\Phi(\beta) = \sum^S_{i=1}\Delta \Phi^{\rm site}_i - \sum_{(i,j)\in E}\Delta \Phi^{\rm edge}_{ij},
+\end{equation}
+where 
+\begin{eqnarray}
+\Delta \Phi^{\rm site}_i =  -\frac{1}{\beta} \left\{ \log  \int \prod_{j\in \partial i}({\rm d}h_j \mathcal{P}^{{\rm 1RSB},(i))}_j)  \exp\left(-\beta \Delta H^{\rm site}_i(h_{1},h_2,\ldots,h_{|\partial i|}) \right) \right\}
+\end{eqnarray}
+and 
+\begin{equation}
+\Delta \Phi^{\rm edge}_{ij} = -\frac{1}{\beta} \left\{ \log  \int  {\rm d}h \mathcal{P}^{{\rm 1RSB},(i)}_j(h)   \int  {\rm d}g \mathcal{P}^{{\rm 1RSB},(j)}_i (g)   \exp\left(-\beta \Delta H^{\rm edge}_{ij}(h,g) \right) \right\} . 
+\end{equation}
+Here  
+\begin{eqnarray}
+\Delta H^{\rm site}_i(h_{1},h_2,\ldots,h_{|\partial i|}) = {\rm min}_{n\in [0,1]}\left\{ n\!\left(\frac{n}{2}-1\right)
+      + \sum^{|\partial i|}_{\ell=1 } \min_{x\in[0,1]}\{h_\ell(x)+J_{ i \ell(i)} \:  n x\}\right\}, 
+\end{eqnarray}
+with $\ell(i)$ enumerating over the neighbours of node $i$,
+and 
+\begin{eqnarray}
+\Delta H^{\rm edge}_{ij}(h,g) = {\rm min}_{n_1,n_2} \left\{h(n_1) +  g(n_2) + J_{ij}n_1n_2\right\}.
+\end{eqnarray}
+
+
+
+The value of $\epsilon$ as a function of $\mu$ can be obtained through an explicit derivation of $\beta\Phi(\beta)$ towards $\beta$~\cite{mezard2003cavity}.  This yields the result 
+\begin{equation}
+\epsilon(\beta) = \sum^S_{i=1}\Delta \epsilon^{\rm site}_i - \sum_{(i,j)\in E}\Delta \epsilon^{\rm edge}_{ij},
+\end{equation} 
+where 
+\begin{equation}
+\Delta \epsilon^{\rm site}_i = \frac{\int \prod_{j\in \partial i}({\rm d}h_j \mathcal{P}^{{\rm 1RSB},(i))}_j)   \Delta H^{\rm site}_i(h_{1},h_2,\ldots,h_{|\partial i|})\exp\left(-\beta \Delta H^{\rm site}_i(h_{1},h_2,\ldots,h_{|\partial i|}) \right)}{\int \prod_{j\in \partial i}({\rm d}h_j \mathcal{P}^{{\rm 1RSB},(i))}_j)  \exp\left(-\beta \Delta H^{\rm site}_i(h_{1},h_2,\ldots,h_{|\partial i|}) \right)}
+\end{equation} 
+and 
+\begin{equation}
+\Delta \epsilon^{\rm edge}_{ij} =  \frac{ \int  {\rm d}h \mathcal{P}^{{\rm 1RSB},(i)}_j(h)   \int  {\rm d}g \mathcal{P}^{{\rm 1RSB},(j)}_i (g) \Delta H^{\rm edge}_{ij}(h,g)  \exp\left(-\beta \Delta H^{\rm edge}_{ij}(h,g) \right) }{ \int  {\rm d}h \mathcal{P}^{{\rm 1RSB},(i)}_j(h)   \int  {\rm d}g \mathcal{P}^{{\rm 1RSB},(j)}_i (g)   \exp\left(-\beta \Delta H^{\rm edge}_{ij}(h,g) \right) } .
+\end{equation} 
+
+Lastly, the complexity as a function of $\epsilon$ follows from 
+\begin{equation}
+\Sigma(\epsilon) = \mu (\epsilon-\Phi).   \label{eq:SigmaF}
+\end{equation}
+
+
+\section{Random regular graphs with constant interactions}\label{sec:reg}
+As a first example, we consider random regular graphs with constant interactions, $J_{ij} = \mu>0$ for all pairs $(i,j)\in E$.     In this model, all nodes have the same 
+ degree $|\partial_i| = c \in\mathbb{N}$ and thus the degree distribution takes the form 
+\begin{equation}
+   p(k)=\delta_{k,c}  .
+\end{equation} 
+
+
+
+In this example, the  Eqs.~(\ref{eq:P}) and (\ref{eq:Q}) take the form 
+\begin{eqnarray}
+    \mathcal{Q}\left( h \right)
+    &=& \int \prod_{j=1}^{c-1} \mathrm{d}h_j\,\mathcal{Q}(h_j)
+\:  \delta_{{\rm F}}\!\left(
+      h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{j=1}^{c-1} \min_{x\in[0,1]}\{h_j(x)+ \mu \:  n x\}\Big]
+    \right) \label{eq:QReg}
+\end{eqnarray} 
+and
+\begin{eqnarray}
+    \mathcal{P}\left( h \right)
+    &=& \int \prod_{j=1}^{c} \mathrm{d}h_j\,\mathcal{Q}(h_j)
+\:  \delta_{{\rm F}}\!\left(
+      h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{j=1}^{c} \min_{x\in[0,1]}\{h_j(x)+ \mu \:  n x\}\Big]
+    \right) .\label{eq:PReg}
+\end{eqnarray} 
+
+Solving these equations, we find  two qualitatively different regimes, depending on whether $\mu$ is larger or smaller than the de Almeida-Thouless  line $\mu_{\rm AT}$, with 
+\begin{equation}
+ \mu_{\rm AT}  = \frac{1}{2\sqrt{c-1}}.
+\end{equation}
+
+% In this case
+% \begin{equation}
+%     \rho(J)=\delta(J-\mu),
+%     \qquad
+%     p(k)=\delta_{k,c}.
+% \end{equation} 
+
+\subsection{Homogeneous solution ($\mu<\mu_{\rm AT}$)}
+For random regular graphs with constant interactions, the Lotka-Volterra   system  (\ref{eq:sys}) admits the fixed point solution 
+\begin{equation}
+n^\ast_i =  \frac{1}{1+\mu c},\label{eq:FPReg}
+\end{equation}
+for all $i\in [S]$.     
+This solution is linearly stable as  long as a $\mu<\mu_{\rm AT}$, 
+as follows form a spectral analysis of the Jacobian of (\ref{eq:sys}) linearised around the fixed point (\ref{eq:FPReg}).  In this section we show how these results are recovered from the cavity method.      
+
+For $\mu<\mu_{\rm AT}$, 
+the Eqs.~(\ref{eq:PReg}) and (\ref{eq:QReg}) admit the homogeneous solution  [see Appendix~\ref{app:regular}]
+\begin{equation}
+\mathcal{Q}(h) = \delta(h-\tilde{g}) \quad {\rm and}  \quad \mathcal{P}(h) = \delta(h-\tilde{h}), \label{eq:regsol1}
+\end{equation}
+with 
+\begin{equation}
+\tilde{g}(n) =\frac{1+\Delta_{\mu, c}}{4} n^2 -  \frac{1+2\mu+ \Delta_{\mu,c}}{2(1+c\mu)}  n + \tilde{\gamma}   \label{eq:regsol2}
+\end{equation}
+and 
+\begin{equation}
+\tilde{h}(n) =   \frac{c-2+c\Delta_{c,\mu}}{4(c-1)}n^2 - \frac{c-2+c\Delta_{c,\mu}}{2(c-1)(1+c\mu)}n + \gamma.  \label{eq:regsol3}
+\end{equation}
+Here  
+\begin{equation}
+\Delta_{\mu,c} = \sqrt{1-4(c-1)\mu^2},  \label{eq:Delta}
+\end{equation}
+which only exists for $\mu\leq \mu_{\rm AT}$, and $\gamma$ and $\tilde{\gamma}$ are two constants (independent of $n$) that are presented in Appendix~\ref{app:regular}.  
+
+The minimum value of $\tilde{h}(n)$ is attained at 
+\begin{equation}
+n^\ast = \frac{1}{1+\mu c},
+\end{equation}
+and thus the population abundance distribution is given by 
+\begin{equation}
+p_N(n) = \delta(n-n^\ast).
+\end{equation}
+This solution  thus  corresponds indeed with the fixed point  $n_i = n^\ast$ to the Lotka-Volterra model (\ref{eq:sys})  on a random regular graph graph.   The survival probability $\phi = 1$.  
+
+
+
+ 
+%It follows from Eqs.~(\ref{eq:cavity}) that the function $\tilde{g}(n) $ solves the equation 
+%\begin{equation}
+%\tilde{g}(n) = n\left(\frac{n}{2}-1\right) + (c-1) \: {\rm min}_{x\in[0,1]} \left\{\tilde{g}(x)+\mu x\: n\right\},  \label{eq:homegeneous1}
+%\end{equation}
+%and from Eqs.~(\ref{eq:cavityv2}), 
+%\begin{equation}
+%\tilde{h}(n) = n\left(\frac{n}{2}-1\right) + c \: {\rm min}_{x\in[0,1]} \left\{\tilde{g}(x)+\mu x\: n\right\}.  \label{eq:homegeneous2}
+%\end{equation}
+
+%As we show in Appendix~\ref{app:regular}, these equations  admit for
+%\begin{equation}
+%\mu<\mu_{\rm c} = \frac{1}{2\sqrt{c-1}}
+%\end{equation}
+%%two solutions.  The first (relevant) solution takes the  form
+%\begin{equation}
+%\tilde{g}(n) = \frac{1 + \Delta_{c,\mu} }{4} \: n^2 - \frac{1 + \Delta_{c,\mu} }{1 - 2(c-1) \mu + \Delta_{c,\mu} }  n  + \frac{(c-1)(1+\Delta_{c,\mu})}{(c-2)(1-2(c-1)\mu+\Delta_{c,\mu})^2} \label{eq:gtilde}
+%\end{equation}
+%and 
+%\begin{equation}
+%\tilde{h}(n) = \frac{1}{2} \left( 1 - \frac{2c \mu^2}{1 + \Delta_{c,\mu}}\right) n^2  - \left(\frac{1 + 2
+%\mu + \Delta_{c,\mu} }{1 - 2(c-1) \mu + \Delta_{c,\mu} } \right) n  +   \frac{c(c-1)(1+\Delta_{c,\mu})}{(c-2)(1-2(c-1)\mu+\Delta_{c,\mu})^2} , 
+%\end{equation}
+%where  $\Delta_{c,\mu}  = \sqrt{1-4(c-1)\mu^2}$.    
+
+%The population abundances 
+%\begin{equation}
+%n^\ast_i = {\argmin}_{n\in [0,1]} \tilde{h}(n) = \frac{1}{1+c\mu}.
+%\end{equation}
+
+%The second solution yields $n^\ast_i=0$  for all $i$ (see Appendix~\ref{}).  This solution is also a minimum?
+
+
+
+
+
+
+%Note that for $\mu>\mu_{\rm c}$, there is no homogeneous solution to the cavity equations, and hence this solution has vanished.    
+
+
+%Define
+%\begin{equation}
+%    m(n):=\argmin_{x\in[0,1]}
+%    \left\{
+%        \tilde{h}(x)+\mu n x
+%    \right\}.
+%    \label{eq:rrg_branch_minimizer}
+%\end{equation}
+%In the unique-equilibrium phase this minimizer lies in the interior of $[0,1]$, and satisfies the condition
+%\begin{equation}
+%    \tilde{h}'(m(n))+\mu n=0.
+%    \label{eq:rrg_foc}
+%\end{equation}
+%The cavity field on the original graph is
+%\begin{equation}
+%    h(n)
+%    =
+%    n\bigg(\frac{n}{2}-1\bigg)
+%    +c
+%    \left\{
+%        \tilde{h}(m(n))+\mu n m(n)
+%    \right\}.
+%    \label{eq:rrg_full}
+%\end{equation}
+%Differentiating $h(n)$ with respect to $n$ gives
+%\begin{align}
+%    h'(n)
+%    &=
+%    n-1
+%    +c\left[
+%        \bigl(\tilde{h}'(m(n))+\mu n\bigr)m'(n)
+%        +\mu m(n)
+%    \right].
+%\end{align}
+%Using Eq.~\eqref{eq:rrg_foc}, the term proportional to $m'(n)$ vanishes, and therefore
+%\begin{equation}
+%    h'(n)=n-1+c\mu\,m(n).
+%    \label{eq:rrg_derivative}
+%\end{equation}
+% The equilibrium abundance is given by
+% \begin{equation}
+%     n^\ast=\argmin_{n\in[0,1]} h(n),
+% \end{equation}
+%At $n=n^\ast$ one has
+%\begin{equation}
+%    h'(n^\ast)=0.
+%\end{equation}
+%Hence, by Eq.~\eqref{eq:rrg_derivative},
+%\begin{equation}
+%    0=n^\ast-1+c\mu\,m(n^\ast).
+%    \label{eq:rrg_stationary_before_symmetry}
+%\end{equation}
+%In the unique-equilibrium phase, symmetry implies that all species have the same abundance, so the minimizing value selected in each cavity branch must also be equal to $n_\ast$. Therefore
+%\begin{equation}
+%    m(n^\ast)=n^\ast.
+%    \label{eq:rrg_symmetry_relation}
+%\end{equation}
+%Substituting Eq.~\eqref{eq:rrg_symmetry_relation} into Eq.~\eqref{eq:rrg_stationary_before_symmetry}, we obtain
+%\begin{equation}
+%    n^\ast=\frac{1}{1+c\mu}.
+%    \label{eq:nastReg}
+%\end{equation}
+%Thus, in the replica-symmetric phase, the system has a homogeneous equilibrium in which all species have the same abundance. This agrees with previous results~\cite{mooij2024}.
+
+
+
+\subsection{Complexity for the inhomogeneous solution  ($\mu>\mu_{\rm AT}$)}  
+For $\mu>\mu_{\rm AT}$, the homogeneous solution is unstable, and the cavity equations do not exhibit a shomogeneous solution.   We disuss the nature of the fixed point solutions in this regime.  
+
+The Eqs.~(\ref{eq:QReg}) and (\ref{eq:PReg}) admit a  inhomogeneous solution for $\mu>\mu_{\rm AT}$ that has  which  a nonzero variance.    For this solution  
+the  two-replica distribution $\mathcal{Q}(h,g)$  does   not converge to the diagonal form $\mathcal{Q}(h,g) = \mathcal{Q}(h)\delta(h-g)$, and  thus $\mu= \mu_{\rm AT}$   is the de Almeida-Thouless line for this model [{\bf IN: maybe a figure here? }]  
+
+
+Thus, for $\mu<\mu_{\rm AT}$ there is a unique stable fixed point (for all initial conditions with positive abundances), while for  $\mu>\mu_{\rm AT}$ there are a large number of  fixed points.  
+We  determine now the complexity $\Sigma$, denoting the rate at which the number of solutions incraeses with $S$,  using the 1RSB cavity method.    
+
+In the present case, the 1RSB cavity equations read 
+\begin{eqnarray}
+\mathcal{Q}^{{\rm 1RSB}}(h)  & =&  \frac{1}{\mathcal{N}^{\rm 1RSB}} \int \prod^{c-1}_{\ell=1} dh_\ell \mathcal{Q}^{{\rm 1RSB}}(h_\ell) \: e^{-\beta \:  {\rm min}_{n\in [0,1]} h(n)}\nonumber\\
+&& \times 
+ \delta_{\rm F}\left(  h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum^{c-1}_{\ell=1} \min_{x\in[0,1]}\{h_\ell(x)+ \mu  \:  n x\}\Big]\right) ,
+\end{eqnarray}
+and 
+\begin{eqnarray}
+\mathcal{P}^{{\rm 1RSB}}(h)  & =&  \frac{1}{\mathcal{M}^{\rm 1RSB}} \int \prod^{c}_{\ell=1} dh_\ell \mathcal{Q}^{{\rm 1RSB}}(h_\ell) \: e^{-\beta \:  {\rm min}_{n\in [0,1]} h(n)}
+\nonumber\\ 
+&& \times  \delta_{\rm F}\left(  h - \Big[ n\!\left(\frac{n}{2}-1\right)
+      + \sum^{c-1}_{\ell=1} \min_{x\in[0,1]}\{h_\ell(x)+ \mu  \:  n x\}\Big]\right) , 
+\end{eqnarray}
+where $\mathcal{N}^{\rm 1RSB}$ and $\mathcal{M}^{\rm 1RSB}$ are the normalisation constants.    Note that for $\beta=0$ we recover the Eqs.~(\ref{eq:PReg}) and (\ref{eq:QReg}).   
+
+The complexity follows from Eq.~(\ref{eq:SigmaF}), i.e., $\Sigma = \mu(\epsilon-\Phi)$, and the expressions 
+\begin{eqnarray}
+\Phi &=& -\frac{1}{\beta} \left\{ \log  \int \prod^c_{j=1}({\rm d}h_j \mathcal{Q}^{\rm 1RSB}(h_j))  \exp\left(-\beta \Delta H^{\rm site}(h_{1},h_2,\ldots,h_c) \right) \right\} \nonumber\\ 
+&&  + \frac{c}{2} \left\{ \log  \int  {\rm d}h \mathcal{Q}^{{\rm 1RSB}}(h)   \int  {\rm d}g \mathcal{Q}^{{\rm 1RSB}} (g)   \exp\left(-\beta \Delta H^{\rm edge}(h,g) \right) \right\}
+\end{eqnarray}
+with in this case, 
+\begin{equation}
+\Delta H^{\rm site}(h_{1},h_2,\ldots,h_c) = {\rm min}_{n\in [0,1]}\left\{ n\!\left(\frac{n}{2}-1\right)
+      + \sum^{c}_{\ell=1 } \min_{x\in[0,1]}\{h_\ell(x)+ \mu \:  n x\}\right\}  
+\end{equation}
+and 
+\begin{equation}
+\Delta H^{\rm edge}(h,g) = {\rm min}_{n_1,n_2} \left\{h(n_1) +  g(n_2) +  \mu n_1n_2\right\}.
+\end{equation}
+
+
+Analogously, we find 
+\begin{equation}
+\epsilon =\Delta \epsilon_{\rm site} - \frac{c}{2}\Delta \epsilon_{\rm edge}
+\end{equation}
+where 
+\begin{equation}
+\Delta \epsilon_{\rm site} =   \frac{\int \prod^c_{j=1}({\rm d}h_j \mathcal{Q}^{{\rm 1RSB}}(h_j))   \Delta H^{\rm site}(h_{1},h_2,\ldots,h_{c})\exp\left(-\beta \Delta H^{\rm site}(h_{1},h_2,\ldots,h_{c}) \right)}{\int \prod_{j\in \partial i}({\rm d}h_j \mathcal{Q}^{{\rm 1RSB}}(h_j))  \exp\left(-\beta \Delta H^{\rm site}(h_{1},h_2,\ldots,h_{c}) \right)}
+\end{equation}
+and 
+\begin{equation}
+\Delta \epsilon^{\rm edge} =  \frac{ \int  {\rm d}h \mathcal{Q}^{{\rm 1RSB}}(h)   \int  {\rm d}g \mathcal{Q}^{{\rm 1RSB}} (g) \Delta H^{\rm edge}(h,g)  \exp\left(-\beta \Delta H^{\rm edge}(h,g) \right) }{ \int  {\rm d}h \mathcal{Q}^{{\rm 1RSB}}(h)   \int  {\rm d}g \mathcal{Q}^{{\rm 1RSB}} (g)   \exp\left(-\beta \Delta H^{\rm edge}(h,g) \right) } .
+\end{equation} 
+
+
+%\iz{Probably no analytics required here at this stage.   Maybe one can show some numerics confirming the solution is  inhomogeneous and that the transition is an de almeida-Thouless point. }
+
+
+%At a large enough value of $\mu$, an inhomogeneous solution appears.   This can be shown using a linear stability analysis around the homogeneous solution. 
+
+%For a surviving neighbour $l$ with $n^*_l \in (0,1)$, the minimiser $n^*_l(n_j) = \argmin_{n_l \in [0,1]} \{ h^{(j)}_{l}(n_l) + J_{jl} n_j n_l \}$ satisfies the condition
+%\begin{equation}
+%    \frac{\mathrm{d} h^{(j)}_l}{\mathrm{d} n_l}\bigg|_{n^*_l(n_j)} + J_{jl} n_j = 0.
+%\end{equation}
+%Differentiating with respect to $n_j$ gives
+%\begin{equation}
+%    \frac{\mathrm{d} h^{(j)}_{l}}{\mathrm{d} n_l^2} \bigg|_{n^*_l(n_j)} \cdot \frac{\mathrm{d}n^*_l}{\mathrm{d}n_j} + J_{jl} = 0,
+%\end{equation}
+%giving
+%\begin{equation}
+%    \frac{\mathrm{d} n^*_l}{\mathrm{d}n_j} = -J_{jl} \bigg/\bigg( \frac{\mathrm{d} h^{(j)}_{l}}{\mathrm{d} n_l^2} \bigg|_{n^*_l(n_j)} \bigg).
+%\end{equation}
+%Now we take the derivative of the cavity equation Eq.~\eqref{eq:cavity};
+%\begin{equation}
+%    \frac{\mathrm{d}h^{(i)}_j}{\mathrm{d}n_j} \bigg|_{n^*_j} = n_j - 1 + \sum_{l \in \partial j \backslash\{i\}} J_{jl} n^*_{l}(n_j).
+%\end{equation}
+%Giving
+%\begin{equation}
+ %   \frac{\mathrm{d}^2 h^{(i)}_j}{\mathrm{d}n_j^2} \bigg|_{n^*_j} = 1 - \sum_{l \in \partial j \backslash\{  i\}}J_{jl}^2 \bigg/\bigg( \frac{\mathrm{d} h^{(j)}_{l}}{\mathrm{d} n_l^2} \bigg|_{n^*_l(n_j)} \bigg).
+%\end{equation}
+%At the homogeneous solution, all curves at the fixed point are equal. Taking $\nu = \frac{\mathrm{d}^2 h^{(i)}_j}{\mathrm{d}n_j^2} \bigg|_{n^*_j}$ gives the equation
+%\begin{align}
+%    \nu = 1 - (c-1)\mu^2 / \nu,
+%\end{align}
+%which gives the solution
+%\begin{equation}
+%    \nu = \frac{ 1 \pm \sqrt{1 - 4(c-1)\mu^2} }{ 2 }.
+%\end{equation}
+%The physical solution is the positive branch. This is real and positive precisely when $4(c-1)\mu^2 < 1$, i.e.,
+%\begin{equation}
+%    \mu < \mu_c = \frac{1}{2 \sqrt{c-1}}.
+%\end{equation}
+
+%{\color{red}
+%For Erd\H{o}s-R\'{e}nyi graphs the curvature $\nu$ becomes a random variable, following the recursion
+%%\begin{equation}
+%    \nu \overset{d}{=} 1 - \sum_{l=1}^{k-1} \frac{J_l^2}{\nu_l}, \quad k \sim \frac{p(k)k}{c}, \quad J_l \sim J, \quad \nu_l \text{ i.i.d.}.
+%\end{equation}
+%The Almeida-Thouless line is then determined by the parameter combination for which the support of $\nu$ first touches zero.
+% \\ \\
+% If we try a mean field approximation, i.e. taking $\nu_l = \nu$ for every $l$, then
+% \begin{equation}
+%     \nu(1-\nu) = (K-1) \mu_J^2.
+% \end{equation}
+% Looking at 
+%}
+%%\nm{Should we put another section earlier where we put the derivation above for general random graphs. Then in the regular graph section we just specialize the expressions we already derived.}
+
+%\iz{$h^{(i)}_j = \tilde{h} + \epsilon g^{(i)}_j$ with $|\epsilon|\ll 1$.    The cavity equations then yield 
+%%\begin{equation}
+%g^{(i)}_j  = 
+%\end{equation}
+%}
+
+
+\section{Erd\H{o}s-R\'{e}nyi graphs}
+As a second example, we apply the theory to Lotka-Volterra models defined on  Erd\H{o}s-R\'{e}nyi graphs.    In this case, the degree distribution takes the form
+\begin{equation}
+p(k) = e^{-c}\frac{c^k}{k!}, \quad k\in \mathbb{N},
+\end{equation}
+with $c>0 $ the mean degree, and thus differently from the regular ensemble,  nodes can have distinct degrees.     
+
+We first analyse the distribution of population abundances in Sec.~\ref{sec:abundances}, and then in Sec. ~\ref{sec:phase_diagrams} we determine the phase diagram of Lotka-Volterra models on Erd\H{o}s-R\'{e}nyi graphs.  We find at low mean values of  $J_{ij}$ a unique equilibrium phase, and at larger mean values we find a multiple fixed point phase.   In Sec.~\ref{sec:degree_variability} we determine how degree variability affects the survival probability of species.   
+
+
+
+
+
+
+\subsection{Abundance distributions}\label{sec:abundances}
+\nm{Change the $\phi$ definition in the figure captions and labels.}
+% From $\mathcal{P}(h)$ one can compute the fraction of extinct species. Writing $n^\star(h)=\arg\min_{n\in[0,1]} h(n)$, the extinction fraction is
+% \begin{equation}
+% \begin{aligned}
+%     \phi_0
+%     &:= \lim_{S\to\infty}\overline{\bigg\langle \frac{1}{S}\sum_{i=1}^{m}\mathbf{1}\{n_i=0\}\bigg\rangle}
+%     = \int \mathrm{d}h\; \mathcal{P}(h)\; \mathbf{1}\{n^\star(h)=0\}, \\
+%     \phi_1
+%     &:= \lim_{S\to\infty}\overline{\bigg\langle \frac{1}{S}\sum_{i=1}^{m}\mathbf{1}\{n_i=1\}\bigg\rangle}
+%     = \int \mathrm{d}h\; \mathcal{P}(h)\; \mathbf{1}\{n^\star(h)=1\}.
+% \end{aligned}
+% \end{equation}
+
+% Let $p_N$ indicate the distribution of the species abundance $N$ in the final configuration.
+% \begin{equation}
+%     p_N(n) :=   \lim_{S\rightarrow \infty}\overline{\Big\langle  \frac{1}{S}\sum^S_{i=1}\delta(n - N_i)  \Big\rangle } =  \int \mathrm{d}h \mathcal{P}(h) \delta\left(n - \argmin_xh(x)\right)
+% \end{equation} 
+[{\bf IN: the part below probably fits better in the theory section}]
+If there is unique stable fixed point $\vec{n}^\ast$ to the Eq.~(\ref{eq:sys}) for initial conditions with $n_i(0)>0$ for all $i$, then we define the distribution of the species abundance  in the final configuration as 
+\begin{equation}
+    p_N(n) :=   \lim_{S\rightarrow \infty} \frac{1}{S}\sum^S_{i=1}\delta(n - n^\ast_i) . 
+    %=  \int \mathrm{d}h \; \mathcal{P}(h) \delta\left(n - \argmin_x h(x)\right).
+\end{equation} 
+Here, $N$ represents an abundance in the final state randomly and uniformly selected from the species $i\in[S]$.   Note that we assume, as before, that the distribution $p_N$ converges to a deterministic limit for large $S$.    In this limit, $p_N$ takes the form 
+\begin{equation}
+% p_N(n) = (1-\phi) \delta(n) +  p^{\rm c}_N(n) + \phi_1 \delta(n-1)
+p_N(n) = (1-\phi) \delta(n) +  \hat{p}_N(n) + \phi_1 \delta(n-1)
+\end{equation}
+where $\phi$ is the survival probability and $\phi_1$ is the probability of an isolated species, i.e., all its neighbours have gone extinct, and where $\hat{p}_N(n)$ is the continuous component of the distribution.    The prediction of the cavity method  for $p_N$ is given by 
+\begin{equation}
+p_N(n) = \int \mathrm{d}h \; \mathcal{P}(h) \delta\left(n - \argmin_{x \in[0,1]} h(x)\right). \label{eq:pNCav}
+\end{equation} 
+
+
+
+In case there are multiple stable fixed points, then the final configuration $\lim_{t\rightarrow \infty}n_i(t)$ depends on the initial configuration $n_i(0)$.   In this case one should average $p_N$  over multiple initial conditions, and this quantity then depends on the choice of the distribution of initial conditions.
+
+%In this case, one can define 
+%\begin{equation}
+%    p_N(n) :=  \lim_{S\rightarrow \infty}\overline{ \frac{1}{S}\sum^S_{i=1}\delta(n - n^\ast_i)},
+%\end{equation} 
+%where $\overline{\cdot}$ is an average over  a set of initial conditions.  
+
+
+
+% Let $p_N$ indicate the distribution of the species abundance $N$ in the final configuration. Let $\{ N_i \}_{i=1}^{S}$ be sampled from $N$. We have
+% \begin{equation}
+%     p_N(n) :=   \lim_{S\rightarrow \infty}\overline{\Big\langle  \frac{1}{S}\sum^S_{i=1}\delta(n - N_i)  \Big\rangle } =  \int \mathrm{d}h \; \mathcal{P}(h) \delta\left(n - \argmin_x h(x)\right).
+% \end{equation} 
+%We define
+%\begin{equation}
+%\begin{aligned}
+%    \phi_0 = p_N(0), \qquad
+%    \phi_1 = p_N(1) .
+%\end{aligned}
+%\end{equation}
+\nm{Change parameter $k$ to $\alpha$ everywhere in the text and figures.}
+\nm{Panel c -> a, b-> c, a->b}
+\nm{Try to put stricter threshold on the $1-\phi$, $\phi_1$ in the figure.}
+Figure~\ref{fig:COMPARISON} compares the solution obtained from numerically integrating the original LV dynamics~\eqref{eq:sys} for finite values of $S$,  with the distribution in the limit of $S$ infinitely large as predicted  by  the cavity equations (  i.e., Eq.~(\ref{eq:pNCav})).   The model considered is an Erd\H{o}s-R\'{e}nyi graph with mean degree $c=4$ and with weights $J_{ij}$ drawn from the gamma distribution
+\begin{equation}
+\rho(J;\alpha, \theta) = \frac{1}{\Gamma(\alpha) \theta^\alpha} x^{\alpha-1} e^{-x/\theta}. \label{eq:rhoGamma}
+\end{equation}
+Predictions from the cavity method are in very good agreement with numerical experiments for small parameter values of the shape parameter $\alpha$ (see top figure of Panel {\bf a}).  For larger values of  $\alpha$ we observe a discrepancy, which is most clearly visible in the abundance distribution of the final state (see  bottom figure of Panel {\bf a}).
+
+Panel {\bf b} shows the extinction probability, $1-\phi$, and the probability to observe isolated species, $\phi_1$, as a function of the shape parameter $\alpha$.   
+The extinction probability $1-\phi$ increases monotonically as a function of $\alpha$, as expected, as the competition between species leads to more extinctions.   Instead, 
+ $\phi_1(\alpha)$  [{\bf Wait for results}] is a non monotonic function of $\alpha$, which  is possibly explained by extinctions in the network, causing nodes to become isolated at larger $\alpha$ values.
+In the large $\alpha$ regime, system~\eqref{eq:sys} will have many extinctions as the competition between species becomes extensive (Fig.~\ref{fig:COMPARISON}). Therefore, many species will end up having no neighbours, leading to a subset of surviving species indicating an independent set~\cite{mooij2025}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\columnwidth]{main_figures/COMPARISON.pdf}
+    \caption{  
+    {\bf Cavity predictions compared with Lotka-Volterra simulations for a random ecosystem with Gamma-distributed couplings (scale $\theta=0.2$)}. 
+    {\bf a}, Extinction probability $1-\phi$ and fraction $\phi_1$ of species at carrying capacity as functions of the Gamma shape parameter $k$. 
+    {\bf b}, First and second abundance moments, $\langle N\rangle$ and $\langle N^2\rangle$. 
+    {\bf c}, Abundance distributions for $k=1.0$ (within the single-equilibrium phase) and $k=6.0$ (outside it), excluding the delta peaks at $N=0$ and $N=1$; the corresponding weights are $1-\phi$ and $\phi_1$. The Erd\H{o}s-R\'{e}nyi graphs graph has mean degree $c=4.0$ and size 4000. The cavity equations are solved using population dynamics with $M=4000$ fields and $T=120,000$ iterations.
+    % \nm{Can add panel d showing two graphs, one for k=1 and one for k=6, showing the graph in the final configuration. NM: Wanted to do this, but realized the LV system has size 4000, making it way too cluttered to be plot.}
+    }
+    \label{fig:COMPARISON}
+\end{figure}
+
+
+\subsection{Phase diagrams}\label{sec:phase_diagrams}
+\nm{In panel b, divide the sigma by sqrt(c), not by c.}
+In Sec.~\ref{sec:abundances} we observed a discrepancy for large $\alpha$ values between the predictions by the cavity method and the Lotka-Volterra numerical experiments for finite $S$.
+In this section we  show that this discrepancy is due to the existence of a large number of fixed points  at large enough values of $k$, and therefore the  assumption  there is a unique equilibrium phase does not hold in this parameter region.   Instead at small values of $k$ there is a unique fixed point, independent of initial condition, and the cavity method thus provides exact predictions.  
+
+To determine the transition line between the unique equilibrium phase and the multiple attractor phase, we use the two-replica approach as discussed in Section~\ref{sec:almeida_thouless}.    In Panel {\bf a}  of Fig.~\ref{fig:PHASE_EXTINCTION} we show the de Almeida-Thouless lines for Erd\H{o}s-R\'{e}nyi graphs with mean degree $c=4$ and four different distributions of $\rho(J)$.  We observe that there is a multiple attractor phase at large enough values of the mean of the weights $J_{ij}$, similarly to the regular random graph ensemble of Sec.~\ref{sec:reg}.   However, while in the random regular ensemble the multiple attractor phase coincides with the onset of  species extinctions, in the present irregular ensemble extinctions also occur in the unique fixed point phase.   Extinctions in the unique equilibrium phase are independent of the initial condition and thus predetermined by the graph structure and the interaction weights, while in the multiple attractor regions the species that go extinct depend on the initial condition.  
+
+% We determine these phase diagrams lines for various interaction distributions which gives us two distinct phases; one region where system~\eqref{eq:sys} converges to one unique fixed point, independent of initial condition, and a region where multiple fixed points exist. 
+% We determine the Almeida-Thouless lines as discussed in Section~\ref{sec:almeida_thouless}. 
+
+Panel {\bf b} of Fig.~\ref{fig:PHASE_EXTINCTION} plots the de Almeida-Thouless lines in the $(\langle J\rangle/c,\sigma_J/\sqrt{c})$-plane.     For small   mean values, the de Almeida-Thouless lines for  different distributions $\rho(\cdot)$ are approximately equal and are well described by  a square root law.  However, for larger variances the  de Almeida-Thouless lines  for different interaction distributions are clearly distinct, showing that higher-order moment of $J$ influence the system behaviour. This latter is a sparse-network effect, as  in the dense limit the phase diagram depends only on the mean and variance of the interaction distribution~\cite{bunin2017}.
+
+%However, for  
+%In this regime the higher-order sparseness effects do not show yet.  
+
+
+%The collapse at small parameter values indicates that the Almeida-Thouless line depends only on the first two moments of the coupling distribution in this regime.  
+
+
+% sThis is consistent with the curvature recursion \nm{ref} where the stability of the fixed point is controlled by the sum $\sum J_{jl}^2/\nu_l$, which to leading order depends on $\mathbb{E}[J^2] = \mu_J^2 + \sigma_J^2$.  As $\mu_J$ and $\sigma_J$ increase, the curvatures $\nu_l$ themselves become broadly distributed, and the sum $\sum J_{jl}^2/\nu_l$ becomes sensitive to both $J_{jl}$ and $\nu_l$. Since the distribution of $\nu_l$ is  through the full shape of $\rho(J)$, different coupling families produce different Almeida--Thouless line. 
+
+\begin{figure}[!t]
+    \centering    
+    \includegraphics[width=1.0\columnwidth]{main_figures/PHASE_EXTINCTION.pdf}
+    \caption{
+    {\bf Phase diagrams on Erd\H{o}s--R\'enyi networks}. 
+    {\bf a} Extinction probability $\phi$ is shown within the feasible phase region for different interaction distributions: 
+    , Gamma $(\alpha,\theta)$, truncated Gaussian $(\mu,\sigma)$, folded Gaussian $(\mu,\sigma)$, and lognormal $(\mu,\sigma)$. 
+    Coloured regions indicate the admissible parameter region defined by the de Almeida-Thouless line.
+    {\bf b}, de Almeida-Thouless lines in universal mean and standard deviation space. The interaction values are normalized per edge. The dashed line shows a quadratic least squares fit.
+    }
+    \label{fig:PHASE_EXTINCTION}
+\end{figure}
+
+
+
+% For small parameter values, i.e. low mean and variance, the boundaries all behave very similarly, leading to a fit only determined by the first two moments of the interaction distribution.
+% However, for large values the higher-order sparsity effect start to matter, leading to widely different behaviour dependent on the interaction distribution.
+% This contrasts the phase diagram for the fully connected case, where, using dynamic field theory, it is shown that the phase diagrams only depend on the first two moments of the interaction distribution.
+
+% \subsection{Number of fixed points}
+% \begin{figure}[tb]
+%  \centering
+%     \includegraphics[width=0.55\columnwidth]{main_figures/FixPoint2DGaMa.png}
+%      \includegraphics[width=0.55\columnwidth]{main_figures/NumFixPoint_combined.png}
+%      \caption{Relation with number of fixed points.}
+% \end{figure} 3
+
+\subsection{Influence of degree variability on extinctions}\label{sec:degree_variability} 
+As noted in the previous section, in the unique fixed point region the species extinctions are predetermined by the graph structure and the interaction weights.   This raises the question on how degree variability affects  species survival~\eqref{eq:sys}. 
+
+
+Figure~\ref{fig:EXTINCTION}   shows data on the extinction probability $1-\phi$ and the probability $\phi_1$ to observe isolated species as a function of the node degree for Lotka-Volterra systems on Erd\H{o}s-R\'{e}ny graphs of mean degree $c=4$  and with  weights drawn from the gamma distribution (\ref{eq:rhoGamma}).   The parameters $\alpha$ and $\theta$ are chosen so that we are in the unique equilibrium phase.   
+
+Panel {\bf a} shows that  $1-\phi$ increases as a function of the degree $k$.  This is expected as nodes with  a large degree are competing with a large number of neighbouring species.  On the other hand, $\phi_1$ decreases as a function of the degree, as less neighbouring species need to go extinct for the node to become isolated.  
+
+As the extinction probability is nonzero in Erd\H{o}s-R\'{e}nyi graphs, the network structure in the final configuration is different from the initial  Erd\H{o}s-R\'{e}nyi graph.   This raises the interesting question on what is the structure of the final network.   Panel {\bf b} compares the initial poisson degree distribution with the degree distribution of the Lotka-Volterra system in the final state.  The latter degree distribution is well described by 
+\begin{equation}
+    q(k) = \sum^{\infty}_{j=0} \frac{j p_j}{c}\phi(j),
+\end{equation}
+so that, conditional on the original degree $k$, the node degrees in the final state $k_{\text{Final}}$ are binomially distributed as
+\begin{equation}
+    k_{\text{Final}} \sim \mathrm{Binom}(k,q).
+\end{equation}
+This results in different network structure in the final state compared to the original Poisson degree distribution. High-degree nodes are more likely to be eliminated, and therefore the degree distribution of surviving species in the final state is shifted towards smaller degrees, while retaining the exponential tail inherited from the original Erd\H{o}s--R'enyi graph with Poisson($c$) degree distribution; see Fig.~\ref{fig:EXTINCTION}b.
+
+The final state shows a bimodal abundance distribution, with species either extinct or having abundance close to the carrying capacity, and with an extinction probability that increases with node degree; see Fig.~\ref{fig:EXTINCTION}c.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\linewidth]{main_figures/EXTINCTION.pdf}
+    \caption{
+    {\bf Extinctions are determined by node degrees.}
+    {\bf a}, Extinction probability $1-\phi(k)$ and saturation probability $\phi_1(k)$ as a function of the node degree $k$.
+    {\bf b}, Degree distributions in the initial graph and in the final state.
+    {\bf c}, Conditional abundance distribution $P(N\!\mid k)$ from LV simulations and cavity method.
+    Across all panels, markers indicate LV simulations and dashed lines indicate cavity predictions.
+    Data generated with $S=5\times10^4$ species, $M=8000$ fields, and $T=7\times10^5$ updates, with the interactions sampled from the Gamma $(\alpha=1.0,\theta=0.2)$ distribution.
+    }
+    \label{fig:EXTINCTION}
+\end{figure}
+
+
+\section{Discussion}
+\nm{Discussion like it is should maybe have more context. Right now I made it rather technical, with regards to this paper.}
+
+On dense random graphs, the Almeida--Thouless line separating the unique-equilibrium phase from the multi-attractor phase depends only on the mean and variance of the coupling distribution~\cite{bunin2017,biroli2018}.  On sparse random graphs, this also holds at small mean and variance, where the Almeida--Thouless lines for Gamma, truncated Gaussian, folded Gaussian, and lognormal couplings all collapse onto a single curve in the $(\mu_J,\sigma_J)$ plane (Fig.~\ref{fig:PHASE_EXTINCTION}b).  At larger mean and variance the phase boundaries for these families diverge, so that higher-order moments of $\rho(J)$ control the location of the transition.  On a graph with bounded mean degree each species interacts with $O(1)$ neighbours; the local competitive environment therefore fluctuates from node to node, and the self-averaging that makes higher moments irrelevant in the dense limit does not occur.
+
+The cavity method is exact on locally tree-like graphs whenever the cavity equations converge to a unique solution~\cite{mezard2003cavity}, and Erd\H{o}s--R\'{e}nyi graphs are locally tree-like in the limit of large~$S$~\cite{bordenave2015}.  In the unique-equilibrium phase, extinction fractions, abundance moments, and the full abundance distribution obtained from population dynamics all agree with direct numerical integration of the Lotka--Volterra equations (Fig.~\ref{fig:COMPARISON}), confirming that finite-size effects in the simulations are small and that the population-dynamics algorithm has converged.  This agreement holds up to the Almeida-Thouless line.
+
+The extinction probability increases monotonically with the degree of a node: highly connected species accumulate a larger total competitive load and are more likely to go extinct (Fig.~\ref{fig:EXTINCTION}a).  The degree distribution of surviving species is shifted toward lower values relative to the original Poisson distribution, with high-degree nodes preferentially removed (Fig.~\ref{fig:EXTINCTION}b).  Heterogeneous mean-field analyses on dense graphs predict a similar trend~\cite{poley2025}, but there the extinction risk is set by a global effective field; on sparse networks it is the local neighbourhood, the number and strength of a species' direct competitors, that determines survival. The fraction of species at carrying capacity, $\phi_1$, is non-monotonic: it first decreases as competition intensifies, then increases as extinctions remove neighbours and free surviving species from competitive pressure.
+
+Our approach rests on two simplifications relative to the stochastic model of Ref.~\cite{tonolo2025generalized}.  First, we restrict to purely competitive interactions ($J_{ij}\geq 0$), which keeps all abundances in $[0,1]$ and eliminates the divergent trajectories that arise when mutualistic or predatory couplings are present.  Second, we consider deterministic dynamics (zero temperature), so that attractors are fixed points rather than stationary distributions over configurations.  Together these give the dynamics a Lyapunov function~\eqref{eq:energy} and turn the equilibrium problem into a constrained optimisation that the zero-temperature cavity method~\cite{mezard2003cavity} can solve.  Both simplifications are needed to extend the analysis from regular random graphs~\cite{stav2022,tonolo2025generalized} to graphs with heterogeneous and unbounded degree distributions such as Erd\H{o}s--R\'{e}nyi graphs.  The model excludes mutualistic, antagonistic, and asymmetric interactions as well as stochasticity; relaxing the symmetry of the interaction matrix would remove the Hamiltonian structure that the formulation relies on, requiring different methods.
+
+The Almeida-Thouless line is determined by the two-replica method: two copies of the cavity fields, initialised independently but evolved under the same disorder, either collapse onto one another or remain separated, depending on whether the system is in the unique-equilibrium or the multi-attractor phase.  The criterion is whether the joint distribution converges to the diagonal form, as established rigorously for a class of recursive distributional equations in Ref.~\cite{aldous2005survey}. We observe this transition on graphs with heterogeneous degree distributions, not only on regular random graphs as in Ref.~\cite{tonolo2025generalized}, which indicates that the multi-attractor phase is robust to degree fluctuations.
+
+
+
+% \nm{Mention cavity also works in the RSB region. Reference figure 2.}
+% We have shown that the zero-temperature cavity method gives exact equilibrium results for competitive Lotka--Volterra systems on sparse random graphs with symmetric interactions. By recasting the coupled ODE system as self-consistent cavity equations solved by population dynamics, we obtain extinction phase diagrams that agree quantitatively with direct LV simulations in the replica-symmetric regime. The main finding is that sparse graphs behave differently from their dense counterparts: higher-order moments of the interaction distribution matter.
+
+% The phase diagrams show two regimes. At small mean and variance of the coupling distribution, the phase boundaries depend only on the first two moments, as in the dense case. At larger values, however, higher-order moments control the stability of the cavity fixed point, and phase boundaries from different coupling families diverge (Fig.~\ref{fig:PHASE_EXTINCTION}). The phase diagrams thus indicate both where cavity predictions are reliable and where sparse-network effects become important.
+
+% On the computational side, the cavity formulation replaces the integration of $N$ coupled differential equations with an iterative population-dynamics scheme whose cost does not grow with system size. This allows us to compute extinction fractions, abundance distributions, and degree-conditioned survival probabilities much more cheaply than by direct simulation.
+
+% Our analysis applies to sparse competitive systems whose equilibria are minimizers of a Hamiltonian---the case whenever the interaction matrix is symmetric. Extending the approach to asymmetric or predator--prey interactions, where no such Hamiltonian exists, will require different methods. More broadly, the cavity approach used here can in principle be applied to any Hamiltonian system on a locally tree-like graph, and exploring this direction is a natural next step.
+
+\clearpage
+
+\appendix
+
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\alph{subsubsection}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\makeatletter
+\def\p@subsection{}
+\def\p@subsubsection{}
+\makeatother
+
+\newcommand{\appsection}[2]{%
+    \refstepcounter{section}%
+    \setcounter{subsection}{0}%
+    \section*{\texorpdfstring{\thesection\ #2}{\thesection\space #2}}%
+    \label{#1}%
+}
+
+\newcommand{\appsubsection}[2]{%
+    \refstepcounter{subsection}%
+    \subsection*{\texorpdfstring{\thesubsection\ #2}{\thesubsection\space #2}}%
+    \label{#1}%
+}
+
+\appsection{app:cavity_equations}{Derivation of the cavity equations}
+We aim to find the configuration that minimizes the Lyapunov function $H(\vec n)$, i.e.,
+\begin{equation}
+    \vec{n}^\ast = \argmin_{\vec{n}} H(\vec{n}).
+\end{equation}
+
+
+In the cavity method at zero temperature, see Ref.~\cite{mezard2003cavity}, we iteratively determine the minimum-energy state of the system. In particular, for sparse graphs we define
+\begin{equation}
+    h_i(n_i) = \min_{\vec n \setminus \{n_i\} \in [0,1]^{N-1}} H(\vec n).
+\end{equation} 
+[{\bf Check definition and derivations carefully}]
+This is the constrained optimization problem with $n_i$ held fixed.
+By \emph{sparse} we mean that the average degree of the graph remains bounded as $N\to\infty$.
+For example, in the Erd\H{o}s--R\'enyi model $G(N,c/N)$ each edge is present with probability $c/N$, so the expected degree is $c$, independent of $N$. In this regime the graph is locally tree-like, meaning that the neighborhood of a typical vertex is, with high probability, a tree of depth $O(\log N)$.
+Then,
+\begin{equation}
+    n^\ast_i = \argmin_{n_i \in [0,1]} h_i(n_i).
+\end{equation}
+Note that
+\begin{align}
+    H(\vec n) &=
+    \overbrace{n_i\bigg( \frac{n_i}{2} -1 \bigg) + \sum_{j \in \partial i} J_{ij} n_i n_j}^{i \text{ dependence}}
+    + \overbrace{\sum_{j \neq i} n_j\bigg( \frac{n_j}{2} -1 \bigg) + \sum_{\substack{(j,k) \in E, \\ j,k \neq i}} J_{jk} n_j n_k}^{i \text{ independence}}.
+\end{align}
+The cavity method provides a recursion for the functions $h_i(n)$. This recursion reads
+\begin{align}
+    h_i(n_i) = n_i \bigg(\frac{n_i}{2} - 1\bigg) + \sum_{j \in \partial i}\min_{n_j \in [0,1]} \left\{h^{(i)}_j(n_j) - J_{ij} n_i n_j \right\},
+\end{align}
+where $h^{(i)}_j$ is the function $h_j$ defined on the cavity graph with node $i$ removed. The functions $h^{(i)}_j$ can be determined iteratively through
+\begin{equation}
+    h^{(i)}_j(n_j) = n_j \bigg( \frac{n_j}{2} - 1 \bigg) + \sum_{k \in \partial j \setminus \left\{ i \right\}}\min_{n_k \in [0,1]} \left\{h^{(j)}_k(n_k) - J_{jk} n_j n_k\right\}.
+    \label{eq:cav}
+\end{equation}
+This is a closed set of equations in the variables $n_1, n_2, \dots, n_N$.
+Note that a species is extinct if the minimum of the function $h_i(n)$ is at $n=0$, i.e.,
+\begin{align}
+    \text{node $i$ extinct} \iff \argmin_{n_i \in [0,1]} h_i(n_i) = 0.
+\end{align}
+
+
+
+
+
+
+
+
+
+
+
+% \appsubsection{app:convergence}{Convergence of the LV system corresponds with convergence of the cavity equations}
+% We show that system~\eqref{eq:sys} converges if and only if the cavity equations converge.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\appsection{app:population_dynamics}{Population-dynamics solver}
+\appsubsection{app:population_dynamics_algorithm}{Algorithm}
+The above equations can be solved with a population-dynamics algorithm; see again Ref.~\cite{mezard2003cavity}. In the population-dynamics algorithm, we represent the distribution $\mathcal{P}^{\rm c}(h)$ by a population $\left\{h_\alpha\right\}_{\alpha=1,\ldots,M}$ of $M$ functions $h_{\alpha}(n):[0,1]\rightarrow \mathbb{R}$, with $M$ a large number (say $10^4$ or $10^5$). The population can, for instance, be initialized with parabolic functions on the unit interval.
+
+We then update the population using the following procedure:
+\begin{itemize}
+\item randomly pick a degree $k$ from the degree distribution $p_{\rm deg}(k)k/c$;
+\item independently pick $k-1$ values $J_j$, with $j=1,2,\ldots,k-1$, from the distribution $\rho(J)$;
+\item uniformly and independently pick $k-1$ fields $h_j$ from the population;
+\item compute a new value
+\begin{equation}
+    h_{\rm new}(n) = n\left(\frac{n}{2}-1\right) + \sum^{k-1}_{j=1}\min_{n_j\in [0,1]} \left\{h_j(n_j)-J_{j}n_jn\right\};
+\end{equation}
+\item uniformly pick one field from the population and replace it by $h_{\rm new}$.
+\end{itemize}
+
+The above iteration steps are repeated until the population has converged to a stationary state, which represents the solution of the recursive distributional equation. From this population one can then construct the distribution $\mathcal{P}(h)$ and evaluate macroscopic observables such as the extinction probability.
+
+\appsubsection{app:two_replica-approach}{Two replica approach}
+To numerically determine whether two independent initial conditions have converged, we run two copies of the population-dynamics solver in parallel and drive them with the same randomness at every step: the same degree, couplings, parent indices, and replacement index.
+Concretely, this gives two populations, discretized on a grid $\{n_i\}_{i=1}^{G} \subseteq [0,1]$, represented by $2 \times M$ cavity fields $\{ h_j^{1} \}_{j=1}^{M}$ and $\{ h_j^{2} \}_{j=1}^{M}$. One population-dynamics iteration proceeds as follows:
+\begin{enumerate}
+    \item Draw a degree $k$ from the biased law $p_{\text{deg}}(k) k /c$.
+    \item Draw $k-1$ i.i.d. couplings $J_1, \dots, J_{k-1} \sim \rho$, and draw $k-1$ parent indices $i_1, \dots, i_{k-1} \in \{1, \dots, M \}$ uniformly.
+    \item For each replica $r \in \{1,2\}$, build a new field by the cavity update
+    \begin{align*}
+        h_{\rm new}^{(r)}(n) = n\bigg( \frac{n}{2}-1 \bigg) + \sum_{j=1}^{k-1} \min_{n_j \in [0,1]} \bigg\{ h_{i_j}^{(r)}(n_j) - J_j n_j n \bigg\}, \qquad n \in [0,1].
+    \end{align*}
+    \item Draw a replacement index $l \in \{1, \dots, M\}$ and set $h_l^{(r)} \leftarrow h_{\rm new}^{(r)}$ in both replicas.
+\end{enumerate}
+We run the population dynamics for $T$ iterations and discard the first $B$ iterations to let the system settle slightly. In the last $T-B$ iterations we sample every $S$ steps. At each sample we compute the root-mean-square distance between the two populations,
+\begin{align}
+    \Delta_{\rm RMS} = \sqrt{ \frac{1}{MG} \sum_{j=1}^{M} \sum_{i=1}^{G} \bigg( h_{j}^{(1)}(n_i) - h_{j}^{(2)}(n_i) \bigg)^2 },
+\end{align}
+and report the time average over the post-burn-in samples,
+\begin{align}
+    \overline{\Delta}_{\rm RMS} = \langle \Delta_{\rm RMS} \rangle_{t > B}.
+\end{align}
+
+
+\section{Solution to the regular ensemble for $\mu<\mu_{\rm AT}$}\label{app:regular}
+We solve the Eqs.~(\ref{eq:PReg}) and (\ref{eq:QReg}), yielding the solution given by the Eqs.~(\ref{eq:regsol1}), (\ref{eq:regsol2}),   and (\ref{eq:regsol3}).  
+In fact,   for   $\mu<\mu_{\rm AT}$ there exists two  solutions to the Eqs.~(\ref{eq:PReg}) and (\ref{eq:QReg}) that have the  homogeneous form given by Eq.~(\ref{eq:regsol1}), one corresopnding with the stable fixed point $n^\ast_i=1/(1+\mu c)$ and the other with the unstable fixed point $n^\ast_i = 0$. We denote here these two solutions by     $(\tilde{g}_+,\tilde{h}_+)$ and $(\tilde{g}_-, \tilde{h}_-)$, respectively.   
+
+
+
+
+
+
+Substitution of the ansatz
+\begin{equation}
+\tilde{g}(n) = \tilde{\alpha} n^2 + \tilde{\beta}  n + \tilde{\gamma}  ,
+\end{equation}  
+for   $\tilde{g}$  in (\ref{eq:regsol1}) in Eq.~(\ref{eq:QReg}) yields the set of equations  
+\begin{eqnarray}
+\tilde{\alpha} &=& \frac{1}{2} \left(1 - (c-1)\frac{\mu^2}{2\:\tilde{\alpha}  }\right), \\ 
+\tilde{\beta} &=& -1 - (c-1) \frac{\tilde{\beta}   \mu}{2 \tilde{\alpha} }, \\ 
+\tilde{\gamma} &=&  (c-1)\left(\gamma   - \frac{\tilde{\beta}^2 }{4\tilde{\alpha} }\right).  
+\end{eqnarray}
+Solving these towards $\tilde{\alpha}$, $\tilde{\beta}$, and $\tilde{\gamma}$, we find two solutions, $(\tilde{\alpha}_+,\tilde{\beta}_+,\tilde{\gamma}_+)$ and $(\tilde{\alpha}_-\tilde{\beta}_-,\tilde{\gamma}_-)$, viz.,  
+\begin{equation}
+\tilde{\alpha}_\pm = \frac{1\pm\Delta_{\mu, c}}{4} , \quad 
+\tilde{\beta}_\pm = \frac{-1-2\mu\mp \Delta_{\mu,c}}{2(1+c\mu)},
+\end{equation}
+and 
+\begin{equation}
+\tilde{\gamma}_{\pm} = \frac{c+4(c-1)\mu \pm (c-2)\Delta_{\mu, c}}{4(c-2)(1+c\mu)^2}.
+\end{equation}
+Here,  $\Delta_{\mu,c}$ is  as defined in (\ref{eq:Delta}).  
+
+
+Analogously, using the ansatz 
+\begin{equation}
+\tilde{h}_{\pm} = \alpha_{\pm} n^2 + \beta_{\pm} n + \gamma_{\pm},
+\end{equation} 
+we find the two solutions 
+\begin{equation}
+\tilde{h}_-(n) = \frac{c-2-c\: \Delta_{c,\mu}}{4(c-1)}n^2 + \frac{-c+2+c\: \Delta_{c,\mu}}{2(c-1)(1+c\mu)}n  +  \frac{c(c+4(c-1)\mu-(c-2)\Delta_{c,\mu})}{4(c-2)(c-1)(1+c\mu)^2}
+\end{equation}
+and 
+\begin{equation}
+\tilde{h}_+(n) = \frac{c-2+c\: \Delta_{c,\mu}}{4(c-1)}n^2 + \frac{-c+2-c\: \Delta_{c,\mu}}{2(c-1)(1+c\mu)}n +  \frac{c(c+4(c-1)\mu+(c-2)\Delta_{c,\mu})}{4(c-2)(c-1)(1+c\mu)^2}. 
+\end{equation}
+
+Both solutions, $\tilde{h}_-(n)$ and  $\tilde{h}_+(n)$ have a stationary  point at $n^\ast = 1/(1+c\mu)$.  However, for  $\tilde{h}_-(n)$  this stationary point is a maximum, while for  $\tilde{h}_+(n)$  it is a minimum.   Therefore,  
+\begin{equation}
+n^\ast_+ =  \argmin_{n\in [0,1]}\tilde{h}_+(n) = \frac{1}{1+c\mu}
+\end{equation}
+while 
+\begin{equation}
+n^\ast_- =  \argmin_{n\in [0,1]}\tilde{h}_+(n) = 0. 
+\end{equation}
+We present a plot of $\tilde{h}_-(n)$ and $\tilde{h}_+$ in Fig.~\ref{fig:plotH} for $c=3$ and $\mu=0.1$.    
+  
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{main_figures/ploth.pdf}
+     \put(-120,-5){$n$}
+    \caption{Plot of the two functions  $\tilde{h}_+(n)$ and $\tilde{h}_-(n)$ as a function of $n\in[0,1]$ for $\mu=0.1$ and $c=3$.  The vertical dotted line denotes  $n^\ast = 1/(1+\mu c)$.  }
+    \label{fig:plotH}
+\end{figure}
+
+
+
+\appsection{app:lyapunov}{Cavity method expression for the Lyapunov function}
+The Lyapunov function $H$ corresponding with a solution $\left\{h^{(i)}_j(n)\right\}_{(i,j)\in E}$   to the cavity equations is given by~\cite{mezard2001bethe, mezard2003cavity} 
+\begin{equation}
+H(\vec{n^*}) = \sum_{i\in [S]} \Delta H^{\rm site}_i - \sum_{(i,j)\in E} \Delta H^{\rm edge}_{ij},  
+\end{equation}
+where 
+\begin{eqnarray}
+\Delta H^{\rm site}_i &=& {\rm min}_{n\in [0,1]}  h_i(n) \nonumber\\ 
+&=&  {\rm min}_{n\in [0,1]}\left\{ n\!\left(\frac{n}{2}-1\right)
+      + \sum_{\ell\in \partial i } \min_{x\in[0,1]}\{h^{(i)}_\ell(x)+J_{ i \ell} \:  n x\}\right\},
+\end{eqnarray}
+represents the contribution to the Lyapunov function coming from node $i$ and its neighbouring nodes, and 
+\begin{equation}
+\Delta H^{\rm edge}_{ij} = {\rm min}_{n_1,n_2} \left\{h^{(i)}_j(n_1) +  h^{(i)}_j(n_2) + J_{ij}n_1n_2\right\} ,
+\end{equation}
+represents the contribution to the Lyapunov function coming from nodes $i$ and $j$.  
+
+For random graphs with a prescribed degree distribution we find 
+\begin{equation}
+U(\mathcal{Q}) = \lim_{S\rightarrow\infty} \frac{H}{S} = \langle \Delta H^{\rm site}\rangle - \frac{c}{2} \langle \Delta H^{\rm edge} \rangle,
+\end{equation}
+where 
+\begin{eqnarray}
+\langle \Delta H^{\rm site}\rangle =  \int {\rm d}h \mathcal{P}(h) \: {\rm min}_n h(n) 
+\end{eqnarray}
+and 
+\begin{equation}
+\langle \Delta H^{\rm edge}\rangle =  \int {\rm d}h \mathcal{Q}(h)\int {\rm d}g \mathcal{Q}(g) \int {\rm d}J \rho(J)\: {\rm min}_{n_1,n_2} \left\{h(n_1) +  g(n_2) + J n_1n_2\right\} .
+\end{equation}
+
+
+
+\appsection{app:boundary_estimation}{Numerical estimation of the de Almeida–Thouless line}
+
+\appsubsection{app:stability_solution}{Stability of the unique equilibrium solution}
+The cavity method described above works under the assumption that the cavity equations converge to a fixed-point solution. This is not guaranteed, as is well known from spin-glass theory~\cite{mezard2003cavity}. The nonconvergence of the cavity equations should correspond to the onset of the multiple-fixed-point regime in this model, as identified in Ref.~\cite{tonolo2025generalized}. To identify the regime where the cavity equations stop converging, we use an approach discussed in Ref.~\cite{aldous2005survey} and applied, for example, in Ref.~\cite{neri2010phase}. This approach dates back to the two-replica method of Kwon and Thouless~\cite{kwon1991spin}.
+
+The method goes as follows. We consider a joint distribution $\mathcal{P}^{\rm c}(h^{(1)},h^{(2)})$ of two fields $h^{(1)}$ and $h^{(2)}$ that see the same disorder and are therefore updated on the same graph:
+\begin{eqnarray}
+    \mathcal{P}^{\rm c}(h^{(1)},h^{(2)}) &=& \sum^{\infty}_{k=0} \frac{p_{\rm deg}(k)k}{c} \int \prod^{k-1}_{j=1} \mathrm{d} J_j \, \rho(J_j) \int \prod^{k-1}_{j=1} \mathrm{d}h_j \, \mathcal{P}^{\rm c}(h^{(1)}_j,h^{(2)}_j)
+    \nonumber\\
+    && \times
+    \delta\left(h^{(1)} - n\frac{n-1}{2} - \sum^{k-1}_{j=1}\min_{n_j \in [0,1]} \left\{h^{(1)}_j(n_j)-J_{j}n_jn\right\} \right)
+    \nonumber\\
+    && \times
+    \delta\left(h^{(2)} - n\frac{n-1}{2} - \sum^{k-1}_{j=1}\min_{n_j\in [0,1]} \left\{h^{(2)}_j(n_j)-J_{j}n_jn\right\} \right).
+    \label{eq:stabTwo}
+\end{eqnarray}
+
+We are in a replica-symmetric regime, i.e. a regime in which the cavity equations converge and there are no multiple attractors, if an initially factorized distribution,
+\begin{equation}
+    \mathcal{P}^{\rm c}(h^{(1)},h^{(2)}) = \mathcal{P}^{\rm c}_{\ast}(h^{(1)})\mathcal{P}^{\rm c}_{\ast}(h^{(2)}), \label{eq:stationary_app}
+\end{equation}
+with $\mathcal{P}^{\rm c}_{\ast}$ the stationary one-replica solution, converges to a diagonal distribution $\mathcal{P}^{\rm c}(h^{(1)})\delta(h^{(1)}-h^{(2)})$. If the distribution converges to a non-diagonal limit, then the system is no longer replica symmetric and multiple attractors are present. The resulting phase boundary is the one used in the main-text phase diagrams.
+
+
+\appsubsection{app:almeida_thouless}{Finding the Almeida--Thouless line}
+We determine the Almeida--Thouless line numerically by iterating the two-replica cavity equation, Eq.~\eqref{eq:stabTwo}, on Erd\H{o}s--R\'enyi graphs of mean degree $c$ with Gamma-distributed couplings $\rho(J)=\mathrm{Gamma}(k,\theta)$. As in the stability analysis above, we monitor whether two replicas evolving under the same disorder collapse onto one another or remain separated. The Almeida--Thouless line is the locus where this behaviour changes.
+
+We explore the $(k,\theta)$ plane in polar coordinates, writing
+\begin{equation}
+    (k,\theta)=(r\cos\varphi,\;r\sin\varphi).
+\end{equation}
+For each angle $\varphi$, we increase $r$, initialize the two-replica dynamics from the factorized condition in Eq.~\eqref{eq:stationary_app}, and iterate Eq.~\eqref{eq:stabTwo} for $T$ steps. We then measure the disorder-averaged $L^\infty$ distance
+\begin{equation}
+    \Delta_\infty(r,T)
+    =
+    \bigl\langle
+    \lVert h^{(1)}-h^{(2)}\rVert_\infty
+    \bigr\rangle.
+    \label{eq:linf_metric}
+\end{equation}
+In the RS phase, $\Delta_\infty(r,T)$ remains at machine precision, while beyond the phase boundary it grows to a nonzero value. Figure~\ref{fig:ALMEIDA_THOULESS}a shows this crossover for a representative angle.
+
+For each $T$, we define $r_{\rm thr}(T)$ as the smallest $r$ such that $\Delta_\infty(r,T)>\varepsilon$, with $\varepsilon=10^{-9}$ and linear interpolation between adjacent grid points. Since finite-$T$ iterations underestimate the asymptotic threshold, we extrapolate using
+\begin{equation}
+    r_{\rm thr}(T)=r_c-ae^{-bT},
+    \label{eq:exp_fit}
+\end{equation}
+with $r_c\geq \max_T r_{\rm thr}(T)$ and $a,b>0$. This gives the critical radius $r_c(\varphi)$; an example is shown in Fig.~\ref{fig:ALMEIDA_THOULESS}b.
+
+Repeating this for all sampled angles yields boundary points $\{(\varphi_i,r_{c,i})\}$. To reduce noise from disorder sampling and finite radial resolution, we fit
+\begin{equation}
+    r_c(\varphi)
+    =
+    c_0 + \frac{a_0}{(\varphi+d_0)^{p_0}},
+    \label{eq:kc_smooth}
+\end{equation}
+with $c_0,a_0,d_0,p_0>0$. Mapping the fitted curve back to the $(k,\theta)$ plane gives the Almeida--Thouless line shown in Fig.~\ref{fig:ALMEIDA_THOULESS}c.
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{main_figures/ALMEIDA_THOULESS.pdf}
+    \caption{
+    {\bf RS-RSB phase boundary for an Erd\H{o}s-R\'enyi random graph with Gamma-distributed couplings of shape $k$ and scale $\theta$.}
+    {\bf a}, Mean $L^\infty$ distance between two cavity replicators as a function of radial distance $r$ along a ray at fixed polar angle $\simeq 1.0^\circ$ in the $(k,\theta)$ plane, for increasing iteration number $T$. The dashed vertical line marks the critical radius $r_c$. 
+    {\bf b}, Threshold radius $r_{\mathrm{thr}}(T)$, defined by the condition that the $L^\infty$ error exceeds $10^{-9}$, with fit $r_{\mathrm{thr}}(T)=r_c-ae^{-bT}$ used to estimate the $T\to\infty$ limit $r_c$. 
+    {\bf c}, RS-RSB boundary in the $(k,\theta)$ plane, obtained by repeating this procedure over all sampled angles. Dots denote estimates; the solid curve is a smooth parametric fit. The star indicates the ray used in {\bf a} and {\bf b}.}
+    \label{fig:ALMEIDA_THOULESS}
+\end{figure}
+
+
+
+
+
+
+% To test whether population dynamics converges to a unique fixed point, we initialize two replicas from different samples of an already equilibrated population at the same parameters. We then evolve both replicas for a fixed number of iterations and measure the error between them at each iteration. The error is defined as the mean absolute difference, evaluated over multiple tail samples, between corresponding cavity fields in the two replicas, using the $\ell_\infty$ norm. Figure~\ref{fig:error_analysis} shows two clear regimes: one at small parameter values where the replicas remain close, and one at larger parameter values where they separate. Between them lies an intermediate regime where the observed error depends strongly on the run length.
+
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=0.75\linewidth]{main_figures/appendix/error_analysis.png}
+%     \caption{
+%     Error analysis of population-dynamics convergence.
+%     Mean $L_\infty$ error versus radius $r$ at fixed polar angle $\theta=62^\circ$ for iteration counts
+%     $T\in\{2\times10^{4},\,4\times10^{4},\,8\times10^{4},\,1.6\times10^{5},\,3.2\times10^{5},\,6.4\times10^{5}\}$.
+%     The ordinate is plotted on a logarithmic scale. The horizontal dashed line denotes the error tolerance $10^{-5}$,
+%     and the vertical dashed line marks the reference radius $r_c\simeq 0.667$.
+%     }
+%     \label{fig:error_analysis}
+% \end{figure}
+
+% \appsubsection{app:boundary_estimation_extrapolation}{Extrapolation in run length}
+
+% For each iteration count $T$, we record the smallest parameter value for which the error exceeds $10^{-5}$. This defines a threshold radius $r_{\mathrm{thr}}(T)$. We then fit the empirical thresholds with the saturating exponential form
+% \begin{equation}
+%     r_{\mathrm{thr}}(T)=k_c-a e^{bT},
+% \end{equation}
+% using nonlinear least squares, and interpret the asymptote as an estimate of the critical value $k_c$. Figure~\ref{fig:expfit_threshold_vs_T} shows a representative fit at fixed angle.
+
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=0.75\linewidth]{main_figures/appendix/expfit_threshold_vs_T.png}
+%     \caption{
+%     Threshold radius $r_{\mathrm{thr}}(T)$ as a function of iteration count $T$ at fixed polar angle $\theta=62^\circ$.
+%     The threshold is defined as the largest radius for which the mean $L_\infty$ error remains below a prescribed tolerance.
+%     Symbols show the thresholds extracted from the data, while the solid curve is an exponential saturation fit, indicating that
+%     $r_{\mathrm{thr}}(T)$ increases rapidly for small $T$ and then approaches an asymptotic limiting radius as $T$ becomes large.
+%     }
+%     \label{fig:expfit_threshold_vs_T}
+% \end{figure}
+
+% We repeat this procedure on a discrete set of polar angles to obtain pointwise estimates of the critical boundary. These estimates are then smoothed to produce the phase boundary used in the main text. Figure~\ref{fig:kc_vs_angle} shows the resulting angular dependence of $k_c$.
+
+% \begin{figure}[t]
+%     \centering
+%     \includegraphics[width=0.75\linewidth]{main_figures/appendix/kc_vs_angle.png}
+%     \caption{
+%     Angular dependence of the estimated critical value $k_c$ defining the RS--RSB boundary.
+%     Points show $k_c$ values obtained independently at each angle from fits to the mean $L_\infty$ error data, while the solid
+%     curve is a Gaussian-process regression used to obtain a smooth boundary as a function of angle.
+%     The shaded band indicates the predictive uncertainty, shown as $\pm 2\sigma$.
+%     }
+%     \label{fig:kc_vs_angle}
+% \end{figure}
+
+
+
+
+\clearpage
+
+\bibliographystyle{unsrt}
+\bibliography{biblio}
+
+\end{document}

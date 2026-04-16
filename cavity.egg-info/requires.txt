@@ -1,0 +1,13 @@
+numpy
+tqdm
+
+[numba]
+
+[numba:python_version < "3.14"]
+numba
+
+[numba:python_version >= "3.14"]
+numba>=0.64
+
+[plots]
+matplotlib

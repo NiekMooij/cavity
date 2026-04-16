@@ -5,8 +5,23 @@ import numpy as np
 try:
     from tqdm.auto import tqdm
 except Exception:  # pragma: no cover
-    def tqdm(x, **kwargs):
-        return x
+    class _TqdmDummy:
+        def __init__(self, iterable=None, **kwargs):
+            self.iterable = iterable
+
+        def __iter__(self):
+            if self.iterable is None:
+                return iter(())
+            return iter(self.iterable)
+
+        def update(self, n=1):
+            return None
+
+        def close(self):
+            return None
+
+    def tqdm(iterable=None, **kwargs):
+        return _TqdmDummy(iterable, **kwargs)
 
 from .distributions import DegreeDistribution, JDistribution
 from .config import PopulationConfig
@@ -49,7 +64,7 @@ def cavity_simulation(
 
     # --- helpers (duplicated locally to keep function self-contained)
     def _step(rng, pop, phi, x, y, scratch, hbuf, recenter_flag):
-        deg_exc = degree.sample_k(rng, size_bias=False, k_max=k_max)
+        deg_exc = degree.sample_excess_k(rng, k_max=k_max)
         if deg_exc > 0:
             idx = rng.integers(0, M, size=deg_exc, dtype=np.int64)
             Js = couplings.sample(rng, size=deg_exc).astype(dtype, copy=False)
@@ -139,7 +154,7 @@ def warm_up_pool(
     burn_in = max(0, int(burn_in))
     bar = _pbar(burn_in, "warm-up")
     for _ in range(burn_in):
-        d = degree.sample_k(rng, size_bias=False, k_max=k_max)
+        d = degree.sample_excess_k(rng, k_max=k_max)
         if d > 0:
             idx = rng.integers(0, M, size=d, dtype=np.int64)
             Js = couplings.sample(rng, size=d).astype(dtype, copy=False)

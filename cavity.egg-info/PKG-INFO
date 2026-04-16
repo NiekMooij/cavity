@@ -1,0 +1,32 @@
+Metadata-Version: 2.4
+Name: cavity
+Version: 0.1.0
+Summary: Cavity population dynamics simulations
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: tqdm
+Provides-Extra: numba
+Requires-Dist: numba; python_version < "3.14" and extra == "numba"
+Requires-Dist: numba>=0.64; python_version >= "3.14" and extra == "numba"
+Provides-Extra: plots
+Requires-Dist: matplotlib; extra == "plots"
+
+# cavity
+
+Cavity population dynamics simulations.
+
+## Quick start
+
+```bash
+python -c "from cavity import DegreeDistribution, JDistribution, PopulationConfig, cavity_simulation; print(cavity_simulation(DegreeDistribution.poisson(3.0), JDistribution(), PopulationConfig(T=10, verbose=False)).shape)"
+```
+
+## Modules
+
+- `cavity.distributions`: degree and coupling distributions
+- `cavity.config`: configuration dataclass
+- `cavity.population`: population state container
+- `cavity.kernels`: numba-accelerated kernels and helpers
+- `cavity.simulation`: single-population simulation and warm-up pool
+- `cavity.replica`: replica traces

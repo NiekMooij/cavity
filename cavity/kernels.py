@@ -4,11 +4,15 @@ import os
 import numpy as np
 
 # ------------------ optional numba JIT ------------------
+NUMBA_IMPORT_ERROR = None
+
 try:
     from numba import njit
     NUMBA_AVAILABLE = True
-except Exception:  # no numba -> define a no-op decorator
+except Exception as exc:  # no numba or broken numba install
     NUMBA_AVAILABLE = False
+    NUMBA_IMPORT_ERROR = f"{type(exc).__name__}: {exc}"
+
     def njit(*args, **kwargs):
         def deco(f): return f
         return deco
